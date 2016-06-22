@@ -114,7 +114,7 @@ else if ($fileInfo['twig']) {
 // --------------------------------
 
 else {
-    $path = basename(ROOT_DIR) . $requestPath;
+    $path = $requestPath;
     if (substr($path, -1) == '/') $path .= 'index.twig';
     exitWithErrorPage(404, [
         'title' => 'File does not exist',
