@@ -152,7 +152,6 @@ This makes your code more portable if you want to share it with others (NOT as a
 if you want do some includes: all includes, extends (to extend a parent layout) etc. start from the root folder. So if you have this structure:
 
 ```
-_twig/
 blocks/
     header.twig
 section1/
@@ -192,9 +191,9 @@ And if you want to include the contents of a file, without rendering it as a tem
 Licenses
 --------
 
-- TwigExpress script (`_twig/src`): MIT License
-- Twig library (`_twig/lib/Twig`): BSD License, see http://twig.sensiolabs.org/license or `_twig/lib/Twig/LICENSE`
-- Karwana\Mime class (`_twig/lib/Mime`): MIT License, see `_twig/lib/Mime/LICENSE`
+- TwigExpress script (`main/src`): MIT License, see `LICENSE`
+- Twig library (`main/lib/Twig`): BSD License, see http://twig.sensiolabs.org/license or `main/lib/Twig/LICENSE`
+- Karwana\Mime class (`main/lib/Mime`): MIT License, see `main/lib/Mime/LICENSE`
 
 
 [DL]: https://github.com/gradientz/twig-express/archive/example.zip
