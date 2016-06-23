@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../lib/Mime/Mime.php';
-use Karwana\Mime\Mime;
-
 /**
  * Check that files exist either directly as-is or as a Twig template
  * @param string $path File path
@@ -41,7 +38,7 @@ function getFileInfo($path, $root) {
     }
 
     if ($ext && ($info['file'] || $info['twig'])) {
-        $info['type'] = Mime::getTypeForExtension($ext);
+        $info['type'] = Karwana\Mime\Mime::getTypeForExtension($ext);
     }
     return $info;
 }

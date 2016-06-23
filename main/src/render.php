@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../lib/Twig/Autoloader.php';
-require_once __DIR__ . '/helpers.php';
-
 define('ROOT_DIR', str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']));
 define('REQUEST_PATH', explode('?', $_SERVER['REQUEST_URI'])[0]);
+
+require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/../lib/Mime/Mime.php';
 
 
 // --------
@@ -76,7 +76,10 @@ if ($fileInfo['file']) {
 // -------------------
 
 else if ($fileInfo['twig']) {
+    require_once __DIR__ . '/../lib/Twig/Autoloader.php';
+    require_once __DIR__ . '/../lib/Parsedown/Parsedown.php';
     Twig_Autoloader::register();
+
     $twigEnv = new Twig_Environment(
         new Twig_Loader_Filesystem(ROOT_DIR),
         $twigConfig
@@ -97,6 +100,22 @@ else if ($fileInfo['twig']) {
             $twigEnv->addGlobal($key, $value);
         }
     }
+
+    /**
+     * Twig filter that transforms a string with Parsedown
+     * Usage:
+     *     {{ someText|markdown }}
+     *     {{ someText|markdown(inline=true) }}
+     *
+     * @param string  $text   Markdown text to process
+     * @param boolean $inline Do not output paragraph-level tags
+     * @return string
+     */
+    $twigEnv->addFilter(new Twig_SimpleFilter('markdown', function($text, $inline=false) {
+        $value = (string) $text;
+        if ($inline) return Parsedown::instance()->line($value);
+        else return Parsedown::instance()->text($value);
+    }));
 
     try {
         $body = $twigEnv->render( $fileInfo['twig'] );
