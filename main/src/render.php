@@ -1,5 +1,8 @@
 <?php
 
+use Karwana\Mime\Mime;
+use joshtronic\LoremIpsum;
+
 define('ROOT_DIR', str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']));
 define('REQUEST_PATH', explode('?', $_SERVER['REQUEST_URI'])[0]);
 
@@ -102,70 +105,27 @@ else if ($fileInfo['twig']) {
         }
     }
 
-    $loremGenerator = new joshtronic\LoremIpsum();
     /**
-     * Twig function for using joshtronic\LoremIpsum, so that we can generate
-     * fake latin words, sentences and paragraphs.
-     *
-     * Syntax for command is:
-     *     'number type'   -> returns a string
-     *     '[number type]' -> returns an array
-     *
-     * Available types:
-     * - 'words' (synonyms: 'word', 'w')
-     * - 'sentences' (synonyms: 'sentence', 's')
-     * - 'paragraphs' (synonyms: 'paragraph', 'p')
-     *
-     * Spaces are optional. Example usage:
-     *
-     *     {{ lorem('5w') }}
-     *     {{ lorem('2 sentences') }}
-     *     {% for item in lorem('[10p]') %}
-     *       <p>{{ item }}</p>
-     *     {% endfor %}
-     *
-     * @param string $type   Name or shortened name of LoremIpsum method to call
-     * @param int    $count  Number of items to generate
-     * @return string
+     * Twig function for using LoremIpsum, so that we can generate fake
+     * latin words, sentences and paragraphs. We want a single instance
+     * or each use will start with 'lorem ipsum' (a strange design choice).
      */
-    $twigEnv->addFilter(new Twig_SimpleFilter('lorem', function($command='1 word') use ($loremGenerator) {
-        if (!preg_match('/^\[?\s*(\d{1,3})\s*([a-z]{1,10})\s*\]?$/', strtolower(trim($command)), $matches)) {
-            return '';
-        }
-        $count = (int) $matches[1];
-        $method = 'words';
-        switch ($matches[2]) {
-            case 'w': case 'word': case 'words':
-                $method = 'words'; break;
-            case 's': case 'sentence': case 'sentences':
-                $method = 'sentences'; break;
-            case 'p': case 'paragraph': case 'paragraphs':
-                $method = 'paragraphs'; break;
-        }
-        $method .= strpos($matches[0], '[') === 0 ? 'Array' : '';
-
-        if (method_exists($loremGenerator, $method)) {
-            $args = func_get_args();
-            array_shift($args);
-            return call_user_func_array(
-                [$loremGenerator, $method],
-                array_merge([$count], $args)
-            );
-        }
-        return '';
+    $loremGenerator = new LoremIpsum();
+    $twigEnv->addFunction(new Twig_SimpleFunction('lorem', function($command='1 word') use ($loremGenerator) {
+        return makeLoremContent($loremGenerator, $command);
     }));
 
     /**
      * Twig filter that transforms a string with Parsedown
      * Usage:
-     *     {{ someText|markdown }}
-     *     {{ someText|markdown(inline=true) }}
+     *     {{ markdown(someText) }}
+     *     {{ markdown(someText, inline=true) }}
      *
      * @param string  $text   Markdown text to process
      * @param boolean $inline Do not output paragraph-level tags
      * @return string
      */
-    $twigEnv->addFilter(new Twig_SimpleFilter('markdown', function($text, $inline=false) {
+    $twigEnv->addFunction(new Twig_SimpleFunction('markdown', function($text, $inline=false) {
         $value = (string) $text;
         if ($inline) return Parsedown::instance()->line($value);
         else return Parsedown::instance()->text($value);

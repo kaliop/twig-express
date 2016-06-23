@@ -38,7 +38,7 @@ function getFileInfo($path, $root) {
     }
 
     if ($ext && ($info['file'] || $info['twig'])) {
-        $info['type'] = Karwana\Mime\Mime::getTypeForExtension($ext);
+        $info['type'] = Mime::getTypeForExtension($ext);
     }
     return $info;
 }
@@ -129,4 +129,48 @@ function renderTwigError(Twig_Error $error, $root) {
         $data['message'] = $error->getRawMessage();
     }
     exitWithErrorPage(500, $data);
+}
+
+/**
+ * Twig function for using joshtronic\LoremIpsum, so that we can generate
+ * fake latin words, sentences and paragraphs.
+ *
+ * Syntax for command is:
+ *     'number type'   -> returns a string
+ *     '[number type]' -> returns an array
+ *
+ * Available types:
+ * - 'words' (synonyms: 'word', 'w')
+ * - 'sentences' (synonyms: 'sentence', 's')
+ * - 'paragraphs' (synonyms: 'paragraph', 'p')
+ *
+ * @param LoremGenerator $generator
+ * @param string $command Count and type of content to generate
+ * @return array|string
+ */
+function makeLoremContent($generator=null, $command='') {
+    if (!preg_match('/^\[?\s*(\d{1,3})\s*([a-z]{1,10})\s*\]?$/', strtolower(trim($command)), $matches)) {
+        return '';
+    }
+    if (!is_a($generator, 'joshtronic\LoremIpsum')) {
+        $generator = new joshtronic\LoremIpsum();
+    }
+    $count = (int) $matches[1];
+    $method = 'words';
+    switch ($matches[2]) {
+        case 'w': case 'word': case 'words':
+            $method = 'words'; break;
+        case 's': case 'sentence': case 'sentences':
+            $method = 'sentences'; break;
+        case 'p': case 'paragraph': case 'paragraphs':
+            $method = 'paragraphs'; break;
+    }
+    $method .= strpos($matches[0], '[') === 0 ? 'Array' : '';
+
+    if (method_exists($generator, $method)) {
+        $extra = array_slice(func_get_args(), 2);
+        $args = array_merge([$count], $extra);
+        return call_user_func_array( [$generator, $method], $args );
+    }
+    return '';
 }
