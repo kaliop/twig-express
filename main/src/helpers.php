@@ -44,6 +44,35 @@ function getFileInfo($path, $root) {
 }
 
 /**
+ * Lists files and folders for one or several glob patterns
+ * (not recursive, and starting from the provided root).
+ * @param string|array $patterns Glob pattern(s) of files or folders to find
+ * @param string $root Root folder to look from
+ * @param string $type Type of element to return: 'folder', 'file' or both
+ * @return array
+*/
+function getFileNames($patterns='*', $root=ROOT_DIR, $type=null) {
+    if (!is_string($root)) return [];
+    if (!is_array($patterns)) $patterns = [$patterns];
+    $files = [];
+    // Find files to include and exclude
+    foreach($patterns as $p) {
+        $p = is_string($p) ? ltrim($p, '\\/') : '';
+        if ($p == '' || strpos($p,'..') !== false) continue;
+        $files = array_merge($files, glob("$root/$p", GLOB_BRACE));
+    }
+    // Filter results
+    if ($type == 'file') $files = array_filter($files, 'is_file');
+    if ($type == 'dir')  $files = array_filter($files, 'is_dir');
+    // Clean up results
+    return array_map(function($file) use ($root) {
+        $path = str_replace('\\','/', $file);
+        $path = str_replace($root . '/', '', $path);
+        return rtrim($path, '/');
+    }, $files);
+}
+
+/**
  * Render a message and stop script
  * @param int $code HTTP error code
  * @param array $data Variables for the error template

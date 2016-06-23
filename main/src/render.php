@@ -171,6 +171,29 @@ else if ($fileInfo['twig']) {
         else return Parsedown::instance()->text($value);
     }));
 
+    /**
+     * Twig function that lists files for one or several glob patterns
+     * @param string|array $patterns Glob pattern(s) of files to find
+     * @param string $where Optional root dir (relative from document root)
+     * @return array
+     */
+    $twigEnv->addFunction(new Twig_SimpleFunction('files', function($patterns='*', $where='') {
+        $root = rtrim(ROOT_DIR . '/' . $where, '/');
+        return getFileNames($patterns, $root, 'file');
+    }));
+
+    /**
+     * Twig function that lists folders for one or several glob patterns
+     * @param string|array $patterns Glob pattern(s) of files to find
+     * @param string $where Optional root dir (relative from document root)
+     * @return array
+     */
+    $twigEnv->addFunction(new Twig_SimpleFunction('folders', function($patterns='*', $where='') {
+        $root = rtrim(ROOT_DIR . '/' . $where, '/');
+        return getFileNames($patterns, $root, 'dir');
+    }));
+
+    // All set? Render the template
     try {
         $body = $twigEnv->render( $fileInfo['twig'] );
         if ($fileInfo['type']) header('Content-Type: ' . $fileInfo['type']);
