@@ -1,7 +1,7 @@
 TwigExpress
 ===========
 
-*[Download][DL]. Unzip. Write [Twig templates][TWIG_HOME] and see the result.*
+*[Download][DOWNLOAD]. Unzip. Write [Twig templates][TWIG_HOME] and see the result.*
 
 
 What is this thing?
@@ -30,7 +30,7 @@ Requirements
 Installation
 ------------
 
-[Download a ZIP of the example project][DL] and unzip it. Bam, you’re done.<br>
+[Download a ZIP of the example project][DOWNLOAD] and unzip it. Bam, you’re done.<br>
 Okay, now how do you see the HTML pages?
 
 ### With PHP only
@@ -191,13 +191,19 @@ And if you want to include the contents of a file, without rendering it as a tem
 Licenses
 --------
 
-- TwigExpress script (`main/src`): MIT License, see `LICENSE`
-- Twig library (`main/lib/Twig`): BSD License, see http://twig.sensiolabs.org/license or `main/lib/Twig/LICENSE`
-- Karwana\Mime class (`main/lib/Mime`): MIT License, see `main/lib/Mime/LICENSE`
+- TwigExpress script: MIT License, see `LICENSE`
+- [Twig library][TWIG_LIB] (`main/lib/Twig`): BSD License, see `main/lib/Twig/LICENSE`
+- [Karwana\Mime][MIME_LIB] (`main/lib/Mime`): MIT License, see `main/lib/Mime/LICENSE`
+- [Parsedown][] (`main/lib/Parsedown`): MIT License, see `main/lib/Parsedown/LICENSE.txt`
+- [php-loremipsum][] (`main/lib/LoremIpsum`): MIT License, see `main/lib/LoremIpsum/LICENSE`
 
 
-[DL]: https://github.com/gradientz/twig-express/archive/example.zip
+[DOWNLOAD]: https://github.com/gradientz/twig-express/archive/example.zip
 [TWIG_HOME]: http://twig.sensiolabs.org/
 [TWIG_DOC]: http://twig.sensiolabs.org/documentation
 [TWIG_INTRO]: http://twig.sensiolabs.org/doc/templates.html
+[TWIG_LIB]: https://github.com/twigphp/Twig
+[MIME_LIB]: https://github.com/karwana/php-mime
+[php-loremipsum]: https://github.com/joshtronic/php-loremipsum/
+[Parsedown]: http://parsedown.org/
 [Timber]: http://upstatement.com/timber/
