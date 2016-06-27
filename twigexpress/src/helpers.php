@@ -15,7 +15,7 @@ function getFileInfo($path, $root) {
     $info = array(
         'file' => NULL,
         'twig' => NULL,
-        'type' => NULL
+        'type' => 'text/html'
     );
     if (!is_string($path) || $path === '') {
         return $info;
@@ -27,6 +27,7 @@ function getFileInfo($path, $root) {
     $path = str_ireplace('.twig', '', $path);
     // Figure out mime type from extension (including the one that comes before .twig, if any)
     $ext = pathinfo($path, PATHINFO_EXTENSION);
+    if ($ext) $info['type'] = Mime::getTypeForExtension($ext);
 
     // Allows loading index.html or index.twig
     $isFolder = substr($path, -1) === '/';
@@ -42,9 +43,6 @@ function getFileInfo($path, $root) {
         $info['twig'] = $twigPath;
     }
 
-    if ($ext && ($info['file'] || $info['twig'])) {
-        $info['type'] = Mime::getTypeForExtension($ext);
-    }
     return $info;
 }
 
@@ -94,8 +92,9 @@ function exitWithErrorPage($code=404, $data=[]) {
         404 => '404 Not Found',
         500 => '500 Internal Server Error'
     ];
-    header( 'HTTP/1.1 ' . $statuses[$code] );
-    extract( array_merge($defaults, $data) );
+    extract(array_merge($defaults, $data));
+    header('HTTP/1.1 ' . $statuses[$code]);
+    header('Content-Type:text/html;charset=utf-8');
     require __DIR__ . '/errorpage.php';
     exit;
 }

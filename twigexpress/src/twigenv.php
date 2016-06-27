@@ -66,7 +66,7 @@ $twigEnv->addExtension(new Twig_Extension_Debug());
 $twigEnv->addGlobal('_get', $_GET);
 $twigEnv->addGlobal('_post', $_POST);
 $twigEnv->addGlobal('_cookie', $_COOKIE);
-$twigEnv->addGlobal('_base', $baseUrl);
+$twigEnv->addGlobal('_base', BASE_URL);
 
 // Add the global variables from the config
 if (is_array($userConfig) && array_key_exists('globals', $userConfig) && is_array($userConfig['globals'])) {
