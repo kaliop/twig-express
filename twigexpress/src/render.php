@@ -9,17 +9,10 @@ $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']);
 $scriptRoot = preg_replace('/\/twigexpress(\.phar|\/start\.php)$/', '', $scriptName);
 $requestPath = explode('?', $_SERVER['REQUEST_URI'])[0];
 
-// Allow overriding the document root
-// (Needed for manual config for Apache with funky config)
-if ($docRootOverride = getenv('TWIGEXPRESS_ROOT')) {
-    define('ROOT_DIR', str_replace('\\', '/', $docRootOverride));
-    define('REQUEST_PATH', $requestPath);
-    define('BASE_URL', '/');
-}
 // If we have a conventional folder structure for Apache, with a .htaccess
 // and a twigexpress.phar at the root of the folder, try to guess if we’re
 // in a subfolder, and correct the root dir, request path and base URL.
-else if (php_sapi_name() !== 'cli-server' && $scriptRoot !== $docRoot && file_exists($scriptRoot . '/.htaccess')) {
+if (php_sapi_name() !== 'cli-server' && $scriptRoot !== $docRoot && file_exists($scriptRoot . '/.htaccess')) {
     $trimmed = $requestPath;
     $baseUrl = '/';
     $parts = array_filter(explode('/', $scriptRoot));
