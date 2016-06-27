@@ -36,6 +36,9 @@
         padding-top: 1em;
         border-top: 1px dashed #ddd;
     }
+    pre, code {
+        font-family: Consolas, Menlo, Source Code Pro, DejaVu Sans Mono, monospace;
+    }
     pre {
         margin: 0;
         padding: 1.5rem;
@@ -43,16 +46,15 @@
         -webkit-tab-size: 4;
         -moz-tab-size: 4;
         tab-size: 4;
+        font-size: 85%;
         color: #999;
         background: black;
     }
     code {
         font-size: 100%;
-        font-family: Consolas, Menlo, Source Code Pro, DejaVu Sans Mono, monospace;
     }
     pre code {
         display: block;
-        font-size: 85%;
     }
     pre mark {
         color: white;
