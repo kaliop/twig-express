@@ -1,0 +1,28 @@
+## Multiviews can create issues with filename.ext.twig
+## patterns (when accessed as filename.ext).
+Options -Indexes -Multiviews
+
+## Tell Apache to treat .phar as PHP scripts
+AddHandler application/x-httpd-php .phar
+
+## Charset in TwigExpress is UTF-8 (not configurable)
+AddDefaultCharset UTF-8
+
+## Send requests to twigexpress.phar
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+
+    ## Some Apache configs require a RewriteBase to work
+    ## correctly. Uncomment and set the RewriteBase to either
+    ## "/" (if your files are at the root of the domain) or
+    ## "/mysubfolder/" (if your files are in a subfolder).
+    #RewriteBase /
+
+    ## If for any reason you get error pages where the document
+    ## root is wildly wrong, you can define the full path to
+    ## the project's folder here:
+    #SetEnv TWIGEXPRESS_ROOT /path/to/project/root
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule (.*) twigexpress.phar/start.php [L]
+</IfModule>
