@@ -54,7 +54,7 @@ function getFileInfo($path, $root) {
  * @param string $type Type of element to return: 'folder', 'file' or both
  * @return array
 */
-function getFileNames($patterns='*', $root=ROOT_DIR, $type=null) {
+function getFileNames($patterns='*', $root=null, $type=null) {
     if (!is_string($root)) return [];
     if (!is_array($patterns)) $patterns = [$patterns];
     $files = [];

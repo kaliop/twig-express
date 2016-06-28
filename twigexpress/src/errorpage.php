@@ -1,3 +1,8 @@
+<?php
+
+if (empty($title)) $title = 'Error';
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -43,7 +48,6 @@
         margin: 0;
         padding: 1.5rem;
         white-space: pre-wrap;
-        -webkit-tab-size: 4;
         -moz-tab-size: 4;
         tab-size: 4;
         font-size: 85%;
