@@ -47,7 +47,7 @@ require_once __DIR__ . '/helpers.php';
 $fileInfo = getFileInfo( REQUEST_PATH, ROOT_DIR );
 
 $typeHeader = 'Content-Type: '.$fileInfo['type'];
-if (preg_match('/(text|javascript)/', $fileInfo['type'])) {
+if (preg_match('/(text|xml|svg|javascript|json)/', $fileInfo['type'])) {
     $typeHeader .= ';charset=utf-8';
 }
 
