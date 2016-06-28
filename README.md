@@ -1,7 +1,7 @@
 TwigExpress
 ===========
 
-*[Download][DOWNLOAD]. Unzip. [Write Twig templates](#using-twig) and see the result.*
+*[Download][DOWNLOAD]. Unzip. Write [Twig templates](#how-can-i-learn-twig) and see the result.*
 
 TwigExpress packages the Twig templating engine, and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
 
