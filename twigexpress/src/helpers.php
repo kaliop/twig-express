@@ -23,11 +23,15 @@ function getFileInfo($path, $root) {
 
     // One does not simply moonwalk into Mordor
     $path = str_replace('..', '', trim($path));
-    // Or ask directly for a Twig file
-    $path = str_ireplace('.twig', '', $path);
-    // Figure out mime type from extension (including the one that comes before .twig, if any)
+
+    // Figure out mime type from extension
     $ext = pathinfo($path, PATHINFO_EXTENSION);
-    if ($ext) $info['type'] = Mime::getTypeForExtension($ext);
+    if ($ext === 'twig') {
+        $info['type'] = 'text/plain';
+    }
+    elseif ($ext && $type = Mime::getTypeForExtension($ext)) {
+        $info['type'] = $type;
+    }
 
     // Allows loading index.html or index.twig
     $isFolder = substr($path, -1) === '/';
