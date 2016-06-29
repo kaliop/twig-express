@@ -26,10 +26,7 @@ function getFileInfo($path, $root) {
 
     // Figure out mime type from extension
     $ext = pathinfo($path, PATHINFO_EXTENSION);
-    if ($ext === 'twig') {
-        $info['type'] = 'text/plain';
-    }
-    elseif ($ext && $type = Mime::getTypeForExtension($ext)) {
+    if ($ext && $type = Mime::getTypeForExtension($ext)) {
         $info['type'] = $type;
     }
 
@@ -104,7 +101,7 @@ function exitWithErrorPage($code=null, $data=[]) {
     header('HTTP/1.1 ' . $code . ' ' . $statuses[$code]);
     header('Content-Type:text/html;charset=utf-8');
     extract(array_merge($defaults, $data));
-    require __DIR__ . '/errorpage.php';
+    require __DIR__ . '/../tpl/error.php';
     exit;
 }
 
@@ -142,4 +139,16 @@ function renderTwigError(Twig_Error $error, $root) {
         $data['message'] = $error->getRawMessage();
     }
     exitWithErrorPage(500, $data);
+}
+
+/**
+ * Show a Twig file with syntax highlighting
+ * @param string $path Full path to file
+ * @param string $url  Requested file (path from project root)
+ * @param string $base URL base
+ */
+function renderTwigSource($path, $url, $base) {
+    $source = file_get_contents($path);
+    require __DIR__ . '/../tpl/source.php';
+    exit;
 }

@@ -52,9 +52,16 @@ if (preg_match('/(text|xml|svg|javascript|json)/', $fileInfo['type'])) {
 }
 
 if ($fileInfo['file']) {
-    // Serve static file directly (for the PHP CLI server)
+    $file = ROOT_DIR . '/' . $fileInfo['file'];
     header($typeHeader);
-    return readfile(ROOT_DIR . '/' . $fileInfo['file']);
+    // Serve Twig file as a HTML page with syntax highlighting
+    if (pathinfo($file, PATHINFO_EXTENSION) === 'twig') {
+        renderTwigSource($file, REQUEST_PATH, BASE_URL);
+    }
+    // Serve static file directly (for the PHP CLI server)
+    else {
+        return readfile($file);
+    }
 }
 else if ($fileInfo['twig']) {
     // Get the $twigEnv and dependencies
