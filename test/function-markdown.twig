@@ -1,0 +1,27 @@
+{% include 'test/styles.css.twig' with {tags:1} %}
+
+<h1>Twig function: <code>markdown</code></h1>
+
+<h2><code>{{ "{{ markdown('Hello *world*!') }}" }}</code></h2>
+
+<blockquote>
+{{ markdown('Hello *world*!') }}
+</blockquote>
+
+<h2><code>{{ "{{ markdown('Hello *world*!', inline=true) }}" }}</code></h2>
+
+<blockquote>
+{{ markdown('Hello *world*!', inline=true) }}
+</blockquote>
+
+<h2><code>{{ "{{ markdown('Hello *world*!') | raw }}" }}</code></h2>
+
+<blockquote>
+{{ markdown('Hello *world*!') | raw }}
+</blockquote>
+
+<h2><code>{{ "{{ markdown(source('README.md')) | raw }" }}</code></h2>
+
+<blockquote>
+{{ markdown(source('README.md')) | raw }}
+</blockquote>

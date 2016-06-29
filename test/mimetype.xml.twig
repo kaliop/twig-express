@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<catalog>
+{% for i in 1..10 %}
+    <book id="bk{{ i }}">
+        <title>Book {{ i }}</title>
+        <genre>{{ random(['Romance', 'Memoir', 'Self-help', 'Crime']) }}</genre>
+        <price>{{ random(49) ~ random(['.90', '.99', '.50', '.00']) }}</price>
+    </book>
+{% endfor %}
+</catalog>
