@@ -282,13 +282,16 @@ You can generate fake latin text with the `lorem()` function.
 {# You can also ask for sentences or paragraphs,
    and abbreviate the command to a single letter. #}
 {{ lorem('5 sentences') }}
-{{ lorem('4s') }}
+{{ lorem('5 s') }}
 {{ lorem('3 paragraphs') }}
-{{ lorem('2p') }}
+{{ lorem('3p') }}
 
 {# Want a random number of elements? #}
 {{ lorem('1-5w') }}
 {{ lorem('5-10 sentences') }}
+
+{# Wrap the paragraphs in <p> tags #}
+{{ lorem('1-5p', 'p') | raw }}
 
 {# Wrap the command in brackets, get an array of strings. #}
 <ul>

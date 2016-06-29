@@ -138,6 +138,7 @@ function processMarkdown($text, $inline=false) {
  * @return array|string
  */
 function makeLoremIpsum($command='1-7w') {
+    if (!is_string($command)) return '';
     if (!preg_match('/^\[?\s*(\d{1,3})(-\d{1,3})?\s*([a-z]{1,10})\s*\]?$/', strtolower(trim($command)), $matches)) {
         return '';
     }
@@ -165,8 +166,7 @@ function makeLoremIpsum($command='1-7w') {
     $generator->word();
 
     if (method_exists($generator, $method)) {
-        $extra = array_slice(func_get_args(), 2);
-        $args = array_merge([$count], $extra);
+        $args = array_merge([$count], array_slice(func_get_args(), 1));
         return call_user_func_array( [$generator, $method], $args );
     }
     return '';
