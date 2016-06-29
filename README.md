@@ -260,7 +260,7 @@ The `files` and `folders` functions let you list the content of a given director
     <a href="{{ url }}">{{ filename }}</a><br>
 {% endfor %}
 
-{# List first and second-level folders %}
+{# List first and second-level folders #}
 {% for foldername in folders(['*', '*/*']) %}
     {{ foldername }}<br>
 {% endfor %}
@@ -276,16 +276,21 @@ The two functions work exactly the same, but `files` matches files and `folders`
 You can generate fake latin text with the `lorem()` function.
 
 ```twig
-Ten words of fake latin? Sure.
+{# Ten words of fake latin? Sure. #}
 {{ lorem('10 words') }}
 
-You can also ask for sentences or paragraphs, and abbreviate the command to a single letter:
+{# You can also ask for sentences or paragraphs,
+   and abbreviate the command to a single letter. #}
 {{ lorem('5 sentences') }}
 {{ lorem('4s') }}
 {{ lorem('3 paragraphs') }}
 {{ lorem('2p') }}
 
-Wrap the command in brackets, and you get an array that you can loop over:
+{# Want a random number of elements? #}
+{{ lorem('1-5w') }}
+{{ lorem('5-10 sentences') }}
+
+{# Wrap the command in brackets, get an array of strings. #}
 <ul>
 {% for item in lorem('[7 sentences]') %}
   <li>{{ item }}</li>

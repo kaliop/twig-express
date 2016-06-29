@@ -126,8 +126,8 @@ function processMarkdown($text, $inline=false) {
  * Generate fake latin text using joshtronic\LoremIpsum
  *
  * Syntax for command string is:
- *     'number type'   -> returns a string
- *     '[number type]' -> returns an array
+ *     'min-max type'   -> returns a string
+ *     '[min-max type]' -> returns an array
  *
  * Available types:
  * - 'words' (synonyms: 'word', 'w')
@@ -137,13 +137,19 @@ function processMarkdown($text, $inline=false) {
  * @param string $command Count and type of content to generate
  * @return array|string
  */
-function makeLoremIpsum($command='5w') {
-    if (!preg_match('/^\[?\s*(\d{1,3})\s*([a-z]{1,10})\s*\]?$/', strtolower(trim($command)), $matches)) {
+function makeLoremIpsum($command='1-7w') {
+    if (!preg_match('/^\[?\s*(\d{1,3})(-\d{1,3})?\s*([a-z]{1,10})\s*\]?$/', strtolower(trim($command)), $matches)) {
         return '';
     }
-    $count = (int) $matches[1];
+    if ($matches[2]) {
+        $min = (int) $matches[1];
+        $max = (int) substr($matches[2], 1);
+        $count = $min <= $max ? rand($min, $max) : rand($max, $min);
+    } else {
+        $count = (int) $matches[1];
+    }
     $method = 'words';
-    switch ($matches[2]) {
+    switch ($matches[3]) {
         case 'w': case 'word': case 'words':
             $method = 'words'; break;
         case 's': case 'sentence': case 'sentences':
