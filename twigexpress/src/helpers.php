@@ -68,11 +68,14 @@ function getFileNames($patterns='*', $root=null, $type=null) {
     if ($type == 'file') $files = array_filter($files, 'is_file');
     if ($type == 'dir')  $files = array_filter($files, 'is_dir');
     // Clean up results
-    return array_map(function($file) use ($root) {
+    $result = array_map(function($file) use ($root) {
         $path = str_replace('\\','/', $file);
         $path = str_replace($root . '/', '', $path);
         return rtrim($path, '/');
     }, $files);
+    // Sort alphabetically
+    sort($result);
+    return $result;
 }
 
 /**
