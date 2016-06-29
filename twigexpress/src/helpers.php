@@ -87,7 +87,7 @@ function getFileNames($patterns='*', $root=null, $type=null) {
  * @param int $code HTTP error code
  * @param array $data Variables for the error template
  */
-function exitWithErrorPage($code=404, $data=[]) {
+function exitWithErrorPage($code=null, $data=[]) {
     $defaults = [
         'title' => 'No page found at this URL',
         'message' => '',
@@ -95,13 +95,15 @@ function exitWithErrorPage($code=404, $data=[]) {
         'code' => ''
     ];
     $statuses = [
-        403 => '403 Forbidden',
-        404 => '404 Not Found',
-        500 => '500 Internal Server Error'
+        '403' => 'Forbidden',
+        '404' => 'Not Found',
+        '500' => 'Internal Server Error'
     ];
-    extract(array_merge($defaults, $data));
-    header('HTTP/1.1 ' . $statuses[$code]);
+    if (is_int($code)) $code = (string) $code;
+    if (!array_key_exists($code, $statuses)) $code = '404';
+    header('HTTP/1.1 ' . $code . ' ' . $statuses[$code]);
     header('Content-Type:text/html;charset=utf-8');
+    extract(array_merge($defaults, $data));
     require __DIR__ . '/errorpage.php';
     exit;
 }
