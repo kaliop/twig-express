@@ -331,7 +331,7 @@ License info
 
 
 [TwigExpress]: https://github.com/gradientz/twig-express
-[DOWNLOAD]: https://github.com/gradientz/twig-express/archive/example.zip
+[DOWNLOAD]: https://github.com/gradientz/twig-express/archive/download.zip
 [JSON_EXAMPLE]: https://en.wikipedia.org/wiki/JSON#Example
 [TWIG_HOME]: http://twig.sensiolabs.org/
 [TWIG_DOC]: http://twig.sensiolabs.org/documentation
