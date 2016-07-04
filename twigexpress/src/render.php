@@ -81,9 +81,9 @@ else {
     // Error page for 404 or disallowed
     $path = REQUEST_PATH;
     if (substr($path, -1) == '/') $path .= 'index.twig';
-    exitWithErrorPage(404, [
+    exitWithPage(404, [
         'title' => 'File does not exist',
-        'message' => 'Could not find: <code> ' . $path . '</code><br>' .
-            'Document root: <code>' . ROOT_DIR . '</code>'
+        'message' => 'Could not find&hairsp;: <code class="error"> ' . $path . '</code><br>' .
+            'Document root&hairsp;: <code>' . ROOT_DIR . '</code>'
     ]);
 }

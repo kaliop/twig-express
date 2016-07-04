@@ -80,18 +80,21 @@ function getFileNames($patterns='*', $root=null, $type=null) {
 }
 
 /**
- * Render a message and stop script
+ * Render an info or error page and stop script
  * @param int $code HTTP error code
  * @param array $data Variables for the error template
  */
-function exitWithErrorPage($code=null, $data=[]) {
+function exitWithPage($code=null, $data=[]) {
     $defaults = [
-        'title' => 'No page found at this URL',
+        'title' => '',
         'message' => '',
         'file' => '',
-        'code' => ''
+        'code' => '',
+        'url' => REQUEST_PATH,
+        'base' => BASE_URL
     ];
     $statuses = [
+        '200' => 'OK',
         '403' => 'Forbidden',
         '404' => 'Not Found',
         '500' => 'Internal Server Error'
@@ -101,7 +104,7 @@ function exitWithErrorPage($code=null, $data=[]) {
     header('HTTP/1.1 ' . $code . ' ' . $statuses[$code]);
     header('Content-Type:text/html;charset=utf-8');
     extract(array_merge($defaults, $data));
-    require __DIR__ . '/../tpl/error.php';
+    require __DIR__ . '/../tpl/page.php';
     exit;
 }
 
@@ -115,13 +118,14 @@ function renderTwigError(Twig_Error $error, $root) {
         'title' => get_class($error),
         'message' => $error->getMessage(),
         'file' => $error->getTemplateFile(),
-        'code' => ''
+        'code' => '',
+        'isError' => true
     ];
     // Get a few lines of code from the buggy template
     $file = $root . '/' . $error->getTemplateFile();
     if (file_exists($file)) {
         $line = $error->getTemplateLine();
-        $plus = 4;
+        $plus = 5;
         $code = file_get_contents($file);
         $code = htmlspecialchars($code, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $lines = preg_split("/(\r\n|\n|\r)/", $code);
@@ -129,26 +133,30 @@ function renderTwigError(Twig_Error $error, $root) {
         $limit = min(count($lines), $line + $plus);
         $excerpt = [];
         for ($i = $start - 1; $i < $limit; $i++) {
-            $attr = 'data-line="'.($i+1).'"';
-            if ($i === $line - 1) $excerpt[] = "<mark $attr>$lines[$i]</mark>";
-            else $excerpt[] = "<span $attr>$lines[$i]</span>";
+            $frag = '<span data-num="'.($i+1).'"></span>';
+            if ($i === $line - 1) $frag .= "<mark>$lines[$i]</mark>";
+            else $frag .= $lines[$i];
+            $excerpt[] = $frag;
         }
         // Update error page info
         $data['file'] = $file . ':' . $line;
         $data['code'] = implode("\n", $excerpt);
         $data['message'] = $error->getRawMessage();
     }
-    exitWithErrorPage(500, $data);
+    $data['url'] = REQUEST_PATH;
+    $data['base'] = BASE_URL;
+    exitWithPage(500, $data);
 }
 
 /**
  * Show a Twig file with syntax highlighting
  * @param string $path Full path to file
- * @param string $url  Requested file (path from project root)
- * @param string $base URL base
  */
-function renderTwigSource($path, $url, $base) {
+function renderTwigSource($path) {
     $source = file_get_contents($path);
-    require __DIR__ . '/../tpl/source.php';
-    exit;
+    $data = [
+        'code' => htmlspecialchars($source, ENT_NOQUOTES, 'UTF-8'),
+        'isError' => false
+    ];
+    exitWithPage(200, $data);
 }

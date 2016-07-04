@@ -327,6 +327,7 @@ License info
 - [Karwana\Mime][MIME_LIB] (`twigexpress/lib/Mime`): MIT License, see `twigexpress/lib/Mime/LICENSE`
 - [Parsedown][] (`twigexpress/lib/Parsedown`): MIT License, see `twigexpress/lib/Parsedown/LICENSE.txt`
 - [php-loremipsum][] (`twigexpress/lib/LoremIpsum`): MIT License, see `twigexpress/lib/LoremIpsum/LICENSE`
+- [highlight.js][]: (`twigexpress/tpl/highlight.pack.js`) BSD License
 
 
 [TwigExpress]: https://github.com/gradientz/twig-express
@@ -338,6 +339,7 @@ License info
 [TWIG_INHERITANCE]: http://twig.sensiolabs.org/doc/templates.html#template-inheritance
 [TWIG_LIB]: https://github.com/twigphp/Twig
 [MIME_LIB]: https://github.com/karwana/php-mime
-[php-loremipsum]: https://github.com/joshtronic/php-loremipsum/
 [Parsedown]: http://parsedown.org/
+[php-loremipsum]: https://github.com/joshtronic/php-loremipsum/
+[highlight.js]: https://github.com/isagalaev/highlight.js
 [Timber]: http://upstatement.com/timber/

@@ -1,78 +1,315 @@
 :root {
-  --pad: 1.5rem;
-}
-@media (max-width:500px) {
-  :root {
-    font-size: 87.75%;
-    --pad: 1rem;
-  }
-}
-body {
-  margin: 0;
-  font-family: sans-serif;
-  color: #333;
-  background: #eee;
-}
-header {
-  padding: 1rem;
-  padding: var(--pad);
-  font-size: 150%;
-  line-height: 1.2;
-}
-header span {
-  padding: 0 .15em;
-}
-header a {
-  padding: 0 .15em;
-  color: #07a;
-  text-decoration: none;
-}
-header a:hover,
-header a:focus {
-  text-decoration: underline;
-}
-main {
-  background-color: #fff;
-  border: solid #ccc;
-  border-width: 1px 0;
-  font-family: Consolas, Menlo, Source Code Pro, DejaVu Sans Mono, monospace;
-}
-main > pre {
-  margin: 0;
-  padding: 1rem;
-  padding: var(--pad);
-}
-h1 {
-  margin: 0;
-  font-size: 1.5em;
-  font-weight: normal;
-}
-pre {
-  margin: 0;
+    /* spacing */
+    --pad: 1.5rem;
+    --code: Consolas, Menlo, Ubuntu Mono, Source Code Pro, monospace;
+
+    /* vim-hybrid colors, some modified for HTML+Twig use case */
+    --black: #1d1f21;
+    --white: #fafefc;
+    --lighter-black: #373b41;
+    --dark-gray: #707880;
+    --mid-gray: #8a94a0;
+    --base-gray: #b4b8b6;
+    --lighter-gray: #dce0da;
+    --lightest-gray: #eef2ef;
+    --orange: #de935f;
+    --yellow: #f0c674;
+    --red: #cc6666;
+    --green: #a5f38f;
+    --purple: #b294bb;
+    --light-purple: #b8c0f0;
+    --blue: #81a2be;
+    --dim-blue: #5b7a95;
+    --aqua: #8abeb7;
+
+    /* vibrant colors */
+    --vibrant-red: #ff6666;
+    --vibrant-orange: #ffbb16;
+    --vibrant-yellow: #ffea00;
+    --vibrant-green: #44ea3c;
 }
 
-/* Theme from: http://atelierbram.github.io/syntax-highlighting/prism/ */
-code[class*="language-"],pre[class*="language-"]{font-family:inherit;line-height:1.5;direction:ltr;text-align:left;white-space:pre-wrap;word-spacing:normal;word-break:normal;-moz-tab-size:4;tab-size:4;background:#2b303b;color:#c0c5ce}
-pre[class*="language-"]::-moz-selection,pre[class*="language-"] ::-moz-selection,code[class*="language-"]::-moz-selection,code[class*="language-"] ::-moz-selection{text-shadow:none;background:#65737e;color:#c0c5ce;}
-pre[class*="language-"]::selection,pre[class*="language-"] ::selection,code[class*="language-"]::selection,code[class*="language-"] ::selection{text-shadow:none;background:#65737e;color:#c0c5ce;}
-pre[class*="language-"]{padding:1em;margin:.5em 0;overflow:auto}
-:not(pre)>code[class*="language-"]{padding:.1em;border-radius:.3em}
-.token.comment,.token.prolog,.token.doctype,.token.cdata{color:#65737e}
-.token.punctuation{color:#c0c5ce}.token.namespace{opacity:.7}
-.token.operator,.token.boolean,.token.number{color:#d08770}
-.token.property{color:#ebcb8b}
-.token.tag{color:#8fa1b3}
-.token.string{color:#96b5b4}
-.token.selector{color:#b48ead}
-.token.attr-name{color:#d08770}
-.token.entity,.token.url,.language-css .token.string,.style .token.string{color:#96b5b4}
-.token.attr-value,.token.keyword,.token.control,.token.directive,.token.unit{color:#a3be8c}
-.token.statement,.token.regex,.token.atrule{color:#96b5b4}
-.token.placeholder,.token.variable{color:#8fa1b3}
-.token.deleted{text-decoration:line-through}
-.token.inserted{border-bottom:1px dotted #eff1f5;text-decoration:none}
-.token.italic{font-style:italic}
-.token.important,.token.bold{font-weight:bold}
-.token.important{color:#bf616a}
-.token.entity{cursor:help}
-pre>code.highlight{outline:0.4em solid #bf616a;outline-offset:.4em}
+body {
+    margin: 0;
+    font-family: Georgia, serif;
+    line-height: 1.15;
+    color: var(--lighter-black);
+    background-color: var(--white);
+}
+
+@media (max-width: 700px) {
+    :root {
+        font-size: 87.75%;
+        --pad: 1rem;
+    }
+}
+
+@media (min-width: 900px) {
+    :root {
+        padding: 2em;
+        background-color: var(--lightest-gray);
+    }
+
+    body {
+        width: 58em;
+        max-width: 100%;
+        margin: 0 auto;
+        border: solid 1px var(--lighter-gray);
+    }
+}
+
+@media (min-width: 1400px) {
+    :root {
+        font-size: 112.5%;
+        --pad: 2rem;
+    }
+}
+
+header {
+    padding: 1rem;
+    padding: var(--pad);
+    line-height: 1.2;
+}
+
+nav {
+    font-size: 1.2em;
+    font-weight: normal;
+    color: var(--mid-gray);
+    cursor: default;
+}
+
+nav:not(:last-child) {
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    margin-bottom: calc(var(--pad) * .75);
+    padding-bottom: calc(var(--pad) * .75);
+    border-bottom: dashed 1px;
+    border-color: var(--lighter-gray);
+}
+
+nav * {
+    display: inline-block;
+    margin-right: .2em;
+}
+
+nav .item {
+    padding: .1em .3em .2em;
+    border: solid 1px;
+    border-radius: 3px;
+    border-color: var(--lighter-gray);
+}
+
+nav a {
+    color: #07a;
+    text-decoration: none;
+}
+
+nav a:hover,
+nav a:focus {
+    text-decoration: underline;
+}
+
+header h1 {
+    margin: .5em 0;
+    font-size: 150%;
+    font-weight: bold;
+    line-height: 1.3;
+    color: var(--lighter-black);
+}
+
+header p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+header code {
+    color: var(--dim-blue);
+}
+
+header .error {
+    color: var(--red);
+}
+
+pre, code {
+    font-family: monospace, monospace;
+    font-family: var(--code);
+}
+
+pre {
+    overflow: hidden;
+    margin: 0;
+    padding: 1rem;
+    padding: var(--pad);
+    font-family: inherit;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    color: var(--base-gray);
+    background: var(--black);
+}
+
+code {
+    font-size: 93.75%;
+}
+
+pre code {
+    display: block;
+}
+
+pre mark {
+    color: white;
+    background: black;
+}
+
+.markError > :not(mark) {
+    filter: saturate(0%);
+}
+
+/* Line numbers */
+
+pre .lineNumbers {
+    padding-left: 3ch;
+}
+
+pre [data-num] {
+    display: inline-block;
+    width: 3ch;
+    overflow: hidden;
+    position: absolute;
+    text-align: right;
+    margin-left: -4.5ch;
+    color: var(--dark-gray);
+}
+pre [data-num]::before {
+    content: attr(data-num);
+}
+
+/**
+ * vim-hybrid theme by w0ng (https://github.com/w0ng/vim-hybrid)
+ * Ported to CSS variables for fun.
+ * With modifications or additions in the case of Twig templates
+ * (in order to make the templating tags more visible, and other
+ * markup, especially HTML, more subdued).
+ */
+
+.hljs {
+    display: block;
+}
+
+.hljs::selection,
+.hljs ::selection {
+    background: var(--lighter-black);
+}
+
+.hljs::-moz-selection,
+.hljs ::-moz-selection {
+    background: var(--lighter-black);
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+.hljs-subst {
+    color: var(--base-gray);
+}
+
+.hljs-title,
+.hljs-name,
+.hljs-attr {
+    color: var(--purple);
+}
+
+.hljs-comment,
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+    color: var(--dark-gray);
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-literal,
+.hljs-deletion,
+.hljs-link {
+    color: var(--red);
+}
+
+.hljs-doctag,
+.hljs-addition,
+.hljs-regexp,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+    color: var(--green);
+}
+
+.hljs-attribute,
+.hljs-code,
+.hljs-selector-id {
+    color: var(--purple);
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-bullet,
+.hljs-tag {
+    color: var(--blue);
+}
+
+.hljs-string,
+.hljs-variable {
+    color: var(--aqua);
+}
+
+.hljs-type,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-quote,
+.hljs-section,
+.hljs-selector-class {
+    color: var(--orange);
+}
+
+/* Special modifications for HTML tags (subtler look) */
+
+.hljs-tag {
+    color: var(--dim-blue);
+}
+
+.hljs-tag .hljs-name {
+    color: var(--blue);
+}
+
+.hljs-tag .hljs-attr {
+    color: var(--purple);
+}
+
+.hljs-tag .hljs-string {
+    color: var(--mid-gray);
+}
+
+/* Special modifications for Twig tags and vars (vibrant look) */
+
+
+.hljs-template-comment {
+    color: var(--light-purple);
+}
+
+.hljs-template-tag {
+    color: var(--vibrant-orange);
+}
+
+.hljs-template-tag .hljs-name,
+.hljs-template-tag .hljs-keyword {
+    color: var(--vibrant-yellow);
+}
+
+.hljs-template-variable {
+    color: var(--green);
+}
+
+.hljs-template-variable .hljs-name {
+    color: var(--vibrant-green);
+}
