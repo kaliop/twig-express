@@ -167,7 +167,16 @@ function makeLoremIpsum($command='1-7w') {
 
     if (method_exists($generator, $method)) {
         $args = array_merge([$count], array_slice(func_get_args(), 1));
-        return call_user_func_array( [$generator, $method], $args );
+        $result = call_user_func_array( [$generator, $method], $args );
+        // Make sure we use a capital letter first, because LoremIpsum
+        // doesn't do it for words. So we're more consistent, and users
+        // who don't want that can still use the |lower Twig filter.
+        if (is_string($result)) {
+            return ucfirst($result);
+        }
+        if (is_array($result)) {
+            return array_map('ucfirst', $result);
+        }
     }
     return '';
 }

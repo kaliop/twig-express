@@ -14,6 +14,12 @@
 {{ lorem('15 words') }}
 </blockquote>
 
+<h2><code>lorem('[9w]')|join(', ')</code></h2>
+<p>Outpout 5 to 9 words joined with commas.</p>
+<blockquote>
+    {{ lorem('[5-9w]')|join(', ') }}
+</blockquote>
+
 <h2><code>lorem('1-5 sentences')</code></h2>
 <p>Output between 1 and 5 sentences.</p>
 <blockquote>
