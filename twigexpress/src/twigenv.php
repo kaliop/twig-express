@@ -33,13 +33,13 @@ if (file_exists($configFile = ROOT_DIR . '/twigexpress.json')) {
     $userConfigData = file_get_contents($configFile);
     $userConfig = json_decode($userConfigData, true);
     if ($jsonError = json_last_error()) {
-        exitWithErrorPage(404, [
+        exitWithPage(404, [
             'title' => json_last_error_msg(),
-            'file' => $configFile,
+            'subtitle' => "In $configFile",
             'message' => 'There was a problem while parsing your JSON config. ' .
                 'JSON syntax is rather restrictive, so make sure there’s no syntax error. ' .
                 '<a target="_blank" href="http://jsonlint.com/?json=' . rawurlencode($userConfigData) .
-                '">Test it online with JSONLint</a>'
+                '">Test it online with JSONLint</a>.'
         ]);
     }
 }

@@ -50,8 +50,8 @@ if (!empty($url) && !empty($base)) {
     <header>
         <nav><?php echo $breadcrumbs; ?></nav>
         <?php if (!empty($title)) { echo "<h1>$title</h1>\n"; } ?>
-        <?php if (!empty($message)) { echo "<p>$message</p>\n"; } ?>
-        <?php if (!empty($file)) { echo "<p><code>$file</code></p>\n"; } ?>
+        <?php if (!empty($subtitle)) { echo "<h2>$subtitle</h2>\n"; } ?>
+        <?php if (!empty($message)) { echo "<blockquote>$message</blockquote>\n"; } ?>
     </header>
     <?php if (!empty($code)): ?>
     <main>

@@ -1,6 +1,6 @@
 :root {
     /* spacing */
-    --pad: 1.5rem;
+    --pad: 1.6rem;
     --code: Consolas, Menlo, Ubuntu Mono, Source Code Pro, monospace;
 
     /* vim-hybrid colors, some modified for HTML+Twig use case */
@@ -23,6 +23,7 @@
     --aqua: #8abeb7;
 
     /* vibrant colors */
+    --vibrant-blue: #27c;
     --vibrant-red: #ff6666;
     --vibrant-orange: #ffbb16;
     --vibrant-yellow: #ffea00;
@@ -58,11 +59,16 @@ body {
     }
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1600px) {
     :root {
         font-size: 112.5%;
         --pad: 2rem;
     }
+}
+
+a {
+    color: #07a;
+    color: var(--vibrant-blue);
 }
 
 header {
@@ -72,7 +78,7 @@ header {
 }
 
 nav {
-    font-size: 1.2em;
+    font-size: 115%;
     font-weight: normal;
     color: var(--mid-gray);
     cursor: default;
@@ -81,8 +87,9 @@ nav {
 nav:not(:last-child) {
     margin-bottom: 1em;
     padding-bottom: 1em;
-    margin-bottom: calc(var(--pad) * .75);
-    padding-bottom: calc(var(--pad) * .75);
+    margin-top: calc(var(--pad) * -.15);
+    margin-bottom: calc(var(--pad) * .65);
+    padding-bottom: calc(var(--pad) * .50);
     border-bottom: dashed 1px;
     border-color: var(--lighter-gray);
 }
@@ -93,14 +100,10 @@ nav * {
 }
 
 nav .item {
-    padding: .1em .3em .2em;
-    border: solid 1px;
-    border-radius: 3px;
-    border-color: var(--lighter-gray);
+    padding: 4px 1px;
 }
 
 nav a {
-    color: #07a;
     text-decoration: none;
 }
 
@@ -109,17 +112,32 @@ nav a:focus {
     text-decoration: underline;
 }
 
-header h1 {
-    margin: .5em 0;
+h1 {
+    margin: .75rem 0;
     font-size: 150%;
     font-weight: bold;
     line-height: 1.3;
     color: var(--lighter-black);
 }
 
+h2 {
+    margin: .75rem 0;
+    font-size: 105%;
+    font-weight: normal;
+    font-family: monospace, monospace;
+    font-family: var(--code);
+}
+
+blockquote {
+    margin: 0;
+    padding-left: 1.1em;
+    border-left: solid .4em;
+    border-color: var(--vibrant-orange);
+    line-height: 1.5;
+}
+
 header p {
     margin: 0;
-    line-height: 1.5;
 }
 
 header code {

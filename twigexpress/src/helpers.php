@@ -87,8 +87,8 @@ function getFileNames($patterns='*', $root=null, $type=null) {
 function exitWithPage($code=null, $data=[]) {
     $defaults = [
         'title' => '',
+        'subtitle' => '',
         'message' => '',
-        'file' => '',
         'code' => '',
         'url' => REQUEST_PATH,
         'base' => BASE_URL
@@ -116,8 +116,8 @@ function exitWithPage($code=null, $data=[]) {
 function renderTwigError(Twig_Error $error, $root) {
     $data = [
         'title' => get_class($error),
+        'subtitle' => $error->getTemplateFile(),
         'message' => $error->getMessage(),
-        'file' => $error->getTemplateFile(),
         'code' => '',
         'isError' => true
     ];
@@ -139,7 +139,7 @@ function renderTwigError(Twig_Error $error, $root) {
             $excerpt[] = $frag;
         }
         // Update error page info
-        $data['file'] = $file . ':' . $line;
+        $data['subtitle'] = "Line $line in $file";
         $data['code'] = implode("\n", $excerpt);
         $data['message'] = $error->getRawMessage();
     }
