@@ -45,7 +45,7 @@ Let’s say you have PHP available on the command line. How can you tell? Open a
 1. [Download a ZIP of the example project][DOWNLOAD] and unzip it.
 2. Put the unzipped folder wherever you want.
 3. Open a Terminal or Command Prompt *in that folder*, and run:<br>
-   `php -S localhost:8000 twigexpress.phar`.
+   `php --server localhost:8000 twigexpress.phar`.
 4. Load `http://localhost:8000/` in a web browser.
 
 ### ⚠ Do not use TwigExpress in production
