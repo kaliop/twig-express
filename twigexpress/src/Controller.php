@@ -223,7 +223,7 @@ class Controller
 
         // Prepare the <title> and breadcrumbs
         $base  = rtrim($this->baseUrl, '/');
-        $host  = $_SERVER['HTTP_HOST'] . ($base ? '/' . $base : '');
+        $host  = $_SERVER['HTTP_HOST'] . ($base ? $base : '');
         $title = $host;
         $url   = trim($this->requestPath, '/');
         $path  = $this->realFilePath;
