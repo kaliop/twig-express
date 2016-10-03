@@ -13,4 +13,11 @@ EOL;
     exit();
 }
 
-require_once __DIR__ . '/src/render.php';
+require_once __DIR__ . '/lib/Mime/Mime.php';
+require_once __DIR__ . '/src/Controller.php';
+require_once __DIR__ . '/src/Utils.php';
+require_once __DIR__ . '/src/TwigEnv.php';
+
+$controller = new Gradientz\TwigExpress\Controller();
+$text = $controller->output();
+if (is_string($text)) echo $text;

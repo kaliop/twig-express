@@ -1,0 +1,106 @@
+{% spaceless %}
+
+    {# Content #}
+    {% set title = title|default('') %}
+    {% set message = message|default('') %}
+    {% set code = code|default('') %}
+
+    {# Breadcrumbs #}
+    {% set crumbs = crumbs|default([]) %}
+    {# By default we're on the last item #}
+    {% set activeCrumb = activeCrumb|default(crumbs|length) %}
+
+    {# File listing #}
+    {% set dirList = dirList|default([]) %}
+    {% set fileList = fileList|default([]) %}
+
+    {# Other #}
+    {% set icon = {
+        dir: '<svg class="icon" aria-label="Folder"><use xlink:href="#icon-folder"/></svg>',
+        file: '<svg class="icon" aria-label="File"><use xlink:href="#icon-file"/></svg>'
+    } %}
+
+{% endspaceless %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width">
+    {% if metaTitle|default('') %}
+        <title>{{ metaTitle }}</title>
+    {% endif %}
+    <style>
+        {{- assets.css | raw -}}
+    </style>
+</head>
+<body>
+
+{{ assets.sprite | raw }}
+
+<header>
+    {% if crumbs|length > 0 %}
+    <nav class="border">
+        {% for item in crumbs %}
+            {%- spaceless %}
+                {% if not loop.first and item.name != '.twig' %}
+                    <span class="sep">/</span>
+                {% endif %}
+                {% if loop.index != activeCrumb %}
+                    <a class="item" href="{{ item.url }}">{{ item.name }}</a>
+                {% else %}
+                    <span class="item">{{ item.name }}</span>
+                {% endif %}
+            {% endspaceless -%}
+        {% endfor %}
+    </nav>
+    {% endif %}
+    {% if title %}
+        <h1>{{ title|raw }}</h1>
+    {% endif %}
+    {% if message %}
+        <blockquote>{{ message|raw }}</blockquote>
+    {% endif %}
+</header>
+
+<main>{% block main %}
+    {%- if dirList|length > 0 %}
+        <ul class="Links Links--folders">
+            {% for dir in dirList -%}
+                <li><a class="Links-link" href="{{ dir.url }}/">{{ icon.dir|raw }}{{ dir.name }}</a></li>
+            {%- endfor %}
+        </ul>
+    {%- endif %}
+    {%- if fileList|length > 0 %}
+        <ul class="Links Links--files{% if fileList|length > 3 %} Links--cols{% endif %}">
+            {% for file in fileList -%}
+                <li><a href="{{ file.url }}">{{ icon.file|raw }}{{
+                    file.name|replace({'.html':'<span>.html</span>'}) | raw
+                }}</a></li>
+            {%- endfor %}
+        </ul>
+    {%- endif %}
+    {%- if code %}
+        <pre class="Code
+        {%- if ' data-num=' in code %} Code--numbers{% endif -%}
+        {%- if '<mark>' in code %} Code--mark{% endif -%}
+    "><code class="twig">
+        {{- code|raw -}}
+    </code></pre>
+    {%- endif %}
+{% endblock %}</main>
+
+{% block footer %}{% endblock %}
+
+{% if code %}
+    <script>
+        {% if codeLang|default('') %}
+        window.twigSubLanguage = '{{ codeLang }}';
+        {% endif %}
+        {{ assets.highlightjs|replace({'</script': '<\\/script'})|raw }}
+        ;hljs.initHighlighting();
+    </script>
+{% endif %}
+
+</body>
+</html>
