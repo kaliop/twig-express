@@ -37,15 +37,17 @@ class TwigEnv
      * TwigEnv constructor
      * @param string $root Document root
      * @param array $userConfig
+     * @param array $namespaces
      * @param array $globals
      */
-    public function __construct($root, $userConfig=[], $globals=[])
+    public function __construct($root, $userConfig=[], $namespaces=[], $globals=[])
     {
         // Save document root as we need to use it often in methods
         $this->docRoot = $root;
 
         // Merge configs before calling the actual environment constructor
         $config = $this->defaults;
+
         if (is_array($userConfig)) {
             foreach($config as $key=>$val) {
                 if (array_key_exists($key, $userConfig)) {
@@ -59,18 +61,22 @@ class TwigEnv
         }
 
         // Set up the twig env
-        $this->env = $this->makeTwigEnv($config, $globals);
+        $this->env = $this->makeTwigEnv($config, $namespaces, $globals);
     }
 
     /**
      * Prepare the Twig environment
      * @param array $config Twig_Environment config
+     * @param array $namespaces Twig namespaces to set up
      * @param array $globals Global variables
      * @return Twig_Environment
      */
-    private function makeTwigEnv($config, $globals)
+    private function makeTwigEnv($config, $namespaces, $globals)
     {
         $loader = new Twig_Loader_Filesystem($this->docRoot);
+        foreach($namespaces as $ns=>$path) {
+            $loader->addPath($path, $ns);
+        }
         $env = new Twig_Environment($loader, $config);
 
         // Enable the 'dump' function
@@ -143,7 +149,7 @@ class TwigEnv
             return $template->render($data);
         }
         // Woops, Twig rendering failed, fallback to minimal HTML
-        catch (\Twig_Error $error) {
+        catch (Twig_Error $error) {
             $html = '';
             foreach(['title'=>'h1', 'subtitle'=>'h2', 'message'=>'blockquote'] as $key=>$tag) {
                 if (array_key_exists($key, $data)) {
@@ -151,7 +157,8 @@ class TwigEnv
                     $html .= "<$tag>$value</$tag>\n";
                 }
             }
-            return $html . "\n" . (string) $error;
+            $html .= "<pre>$error</pre>\n";
+            return $html;
         }
     }
 

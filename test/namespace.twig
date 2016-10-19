@@ -1,0 +1,9 @@
+{% include 'test/styles.css.twig' with {tags:1} %}
+
+This page will show its own source code, as long as the <code>@testnamespace</code> namespace is understood:
+
+<blockquote>
+    <pre>
+        {{- source('@testnamespace/namespace.twig')|e -}}
+    </pre>
+</blockquote>

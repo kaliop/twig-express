@@ -1,0 +1,7 @@
+{
+    "autoescape": true,
+    "strict_variables": true,
+    "namespaces": {
+        "testnamespace": "./test"
+    }
+}

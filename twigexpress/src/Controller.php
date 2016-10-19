@@ -20,6 +20,8 @@ class Controller
 
     /** @var array - User configuration */
     private $config;
+    /** @var array - Valid Twig namespaces (from user configuration) */
+    private $namespaces = [];
     /** @var array - Where we should look for a JSON config file */
     private $configFiles = ['twigexpress.json'];
     /** @var array|string - Glob pattern for files to exclude in dir listings */
@@ -70,6 +72,9 @@ class Controller
 
         // Prepare user config
         $this->config = $this->getUserConfig();
+        if (array_key_exists('namespaces', $this->config)) {
+            $this->namespaces = $this->checkNamespaces($this->config['namespaces']);
+        }
 
         // Can we find the requested file?
         $finfo = $this->findRequestedFile($this->requestPath);
@@ -105,6 +110,36 @@ class Controller
             exit;
         }
         return $config;
+    }
+
+    /**
+     * Check that user-configured Twig namespaces are real directories
+     * @param array $namespaceConf
+     * @return array
+     */
+    private function checkNamespaces($namespaceConf)
+    {
+        // Validate that Twig namespaces exist
+        $valid = [];
+
+        foreach($namespaceConf as $name=>$path) {
+            if (!is_string($name) || !is_string($path)) continue;
+            // Treat paths are absolute unless starting with './'
+            if (strpos($path, './') === 0) {
+                $path = $this->docRoot . '/' . substr($path, 2);
+            }
+            if (!is_dir($path)) {
+                echo $this->showPage(500, [
+                    'metaTitle' => 'Config Error: Bad Twig namespace',
+                    'title' => 'Config Error: Bad Twig namespace',
+                    'message' => "<code>\"$name\"</code>: <code>\"$path\"</code> is not a directory."
+                ]);
+                exit;
+            }
+            $valid[$name] = $path;
+        }
+
+        return $valid;
     }
 
     /**
@@ -168,12 +203,17 @@ class Controller
         require_once __DIR__ . '/../lib/Twig/Autoloader.php';
         \Twig_Autoloader::register();
 
-        return $this->twigEnv = new TwigEnv($this->docRoot, $this->config, [
-            '_get' => $_GET,
-            '_post' => $_POST,
-            '_cookie' => $_COOKIE,
-            '_base' => $this->baseUrl
-        ]);
+        return $this->twigEnv = new TwigEnv(
+            $this->docRoot,
+            $this->config,
+            $this->namespaces,
+            [
+                '_get' => $_GET,
+                '_post' => $_POST,
+                '_cookie' => $_COOKIE,
+                '_base' => $this->baseUrl
+            ]
+        );
     }
 
     /**
@@ -262,11 +302,12 @@ class Controller
 
     /**
      * Show a Twig file with syntax highlighting
+     * @param $path
      * @return string
      */
-    private function showSource()
+    private function showSource($path)
     {
-        $source = file_get_contents($this->realFilePath);
+        $source = file_get_contents($path);
         return $this->showPage(200, [
             'code' => Utils::formatCodeBlock($source, true)
         ]);
