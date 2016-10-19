@@ -16,9 +16,10 @@ TwigExpress packages the Twig templating engine, and a few other tools, in a sin
 1. [# Installation](#installation)
 2. [# Where should I add my content?](#where-should-i-add-my-content)
 3. [# How can I learn Twig?](#how-can-i-learn-twig)
-4. [# Configuration and variables](#configuration-and-variables)
-5. [# Additional features](#additional-features)
-6. [# License info](#license-info)
+4. [# Defining global variables](#defining-global-variables)
+5. [# Extra features](#extra-features)
+6. [# Advanced configuration](#advanced-configuration)
+7. [# License info](#license-info)
 
 
 Installation
@@ -94,134 +95,44 @@ Note that you can organize your content any way you like. There is no enforced c
 How can I learn Twig?
 ---------------------
 
-Let’s start here! In addition to this introduction, you should probably read [Twig for Template Designers][TWIG_INTRO] as well (you could open it in a new tab and come back to it later), and keep the [Twig documentation][TWIG_DOC] around to check what the available Twig tags, filters and functions are.
-
-### Using variables
-
-Creating and using variables is simple:
-
-```twig
-{# Hey I’m a comment! On the next few lines, you can see
-   a Twig tag and the syntax for outputting content. #}
-{% set pageTitle = 'Cool title!' %}
-<h1>{{ pageTitle }}</h1>
-```
-
-Sometimes a variable may contain some HTML code, or HTML entitites, and by default Twig will escape this. If you want to use unescaped content, use the `raw` filter:
-
-```twig
-{% set pageTitle = '<em>Awesome</em> title!' %}
-<h1>{{ pageTitle|raw }}</h1>
-```
-
-Be careful *not* to do this for content that you don’t controll (e.g. any user-submitted content, content from GET and POST parameters, etc.).
-
-Finally, sometimes a variable may or may not be defined. To avoid getting an error, you can use the `default` filter:
-
-```twig
-{# Define default values when using variables #}
-<h1>{{ pageTitle|default('No title') }}</h1>
-{% for i in 1..numItems|default(10) %}
-  {{ i }}<br>
-{% endfor %}
-
-{# Or define default values beforehand, at the start of your template maybe #}
-{% set pageTitle = pageTitle|default('No title') %}
-{% set numItems = numItems|default(10) %}
-...
-<h1>{{ pageTitle }}</h1>
-{% for i in 1..numItems %}
-  {{ i }}<br>
-{% endfor %}
-```
-
-### Including stuff
-
-Many people have dabbled in PHP before, writing `<?php … ?>` tags just for one thing: the `include()` function. That’s also a perfectly good reason for using Twig. :)
-
-With TwigExpress, all your includes start from the root folder. So if you have this structure:
-
-```
-twigexpress.phar
-blocks/
-    header.twig
-section1/
-    page1.twig
-    page2.twig
-```
-
-When using the `{% include %}` tag, you will have to give the complete path from the root folder:
-
-```twig
-{# Yes! #}
-{% include 'blocks/header.twig' %}
-{% include 'section1/page1.twig' %}
-
-{# Nope. Relative paths won't work, sorry! #}
-{% include 'page2.twig' %}
-{% include '../blocks/header.twig' %}
-```
-
-With Twig, you can include a template and pass it some variables:
-
-```twig
-{% include 'blocks/articleteaser.twig' with {
-    title: 'Awesome title',
-    image: 'assets/img/teaser/1.jpg',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit…'
-} %}
-```
-
-Note that these examples we used the `include` tag. There’s also a similar `include` function if you like that syntax better:
-
-```twig
-{{ include('blocks/header.twig') }}
-{{ include('blocks/articleteaser.twig', {title: 'Awesome title'}) }}
-```
-
-You can also include the content of a file without rendering it as a Twig template. This can be quite useful for content that is *not* a Twig template (especially CSS, JS or JSON content). For that, use the `source` function.
-
-```twig
-<script>
-    {{ source('assets/js/analytics.js') }}
-</script>
-```
-
-### Extending a parent template
-
-Next up is the topic of blocks and extends. They’re a really powerful tool, especially for building HTML pages. Rather than describing it here, we’ll refer you to [Twig’s introduction to template inheritance][TWIG_INHERITANCE].
-
-That’s it, you know everything you need to get started with Twig!
+See [our short introduction to Twig](doc/twig-intro.md).
 
 
-Configuration and variables
----------------------------
+Defining global variables
+-------------------------
 
-You can change or add some configuration in a `twigexpress.json` file.
+You can add global variables that will be available in every template rendered by TwigExpress.
 
-- `autoescape`: should Twig escape content when using `{{ myVar }}`?
-- `strict_variables`: should we show an error when trying to use an unknown variable?
-- `globals`: each property in this object will be available as a global variable in all templates.
-
-What are global variables? For example if you have this `twigexpress.json` config:
+Create a file called `twigexpress.json` in the same folder as `twigexpress.phar`. This file could look like this:
 
 ```json
 {
     "globals": {
-        "FACEBOOK_APP_ID": "542F159A0213"
+        "FACEBOOK_APP_ID": "542F159A0213",
+        "someDefaultValue": false
     }
 }
 ```
 
-… then in every template you will be able to use `{{ FACEBOOK_APP_ID }}` to output the corresponding value.
+Then in every template you will be able to use the variables, e.g. like this:
 
-You can add as many global variables as you need. The values can be strings, numbers, arrays or objects, as long as they follow the JSON format ([example here][JSON_EXAMPLE]).
+```twig
+Our Facebook App ID is: {{ 542F159A0213 }}
+
+{% if someDefaultValue %}
+    The "someDefaultValue" variable is true.
+{% else %}
+    The "someDefaultValue" variable is false.
+{% endif %}
+```
+
+You can add as many global variables as you need. The values can be strings, numbers, arrays or objects, as long as they follow [the JSON format][JSON_EXAMPLE].
 
 
-Additional features
--------------------
+Extra features
+--------------
 
-We’re trying to avoid adding special variables, functions and filters that normal Twig does not have. Why? Because the templates you write using this simple Twig renderer should be easy to port to another Twig environment (e.g. Symfony, Drupal 8, WordPress with [Timber][]).
+We’re trying to avoid adding special variables, functions and filters that "normal" Twig does not have. Why? Because the templates you write using this simple Twig renderer should be easy to port to another Twig environment (e.g. Symfony, Drupal 8, WordPress with [Timber][]).
 
 We still included a few special variables or functions, because they help with prototyping. If you decide to use those features, and are working with PHP developers on a project for a specific platform (Drupal 8, Symfony, etc.), be sure to warn them about this compatibility gotcha.
 
@@ -246,30 +157,6 @@ You can use these variables to access GET and POST parameters, as well as cookie
 - `_get`: an array of GET parameters.
 - `_post`: an array of POST parameters.
 - `_cookie`: an array of current cookies.
-
-### Listing files and folders
-
-The `files` and `folders` functions let you list the content of a given directory, using PHP’s `glob` function.
-
-```twig
-{# List of all templates in the 'pages' directory #}
-{% for filename in files('*.twig', 'pages') %}
-    {# The '~' operator concatenates strings, and the 'replace' filter lets us
-       remove the '.twig' extension because we don’t want it in the URL. #}
-    {% set url = _base ~ 'pages/' ~ filename|replace({'.twig':''}) %}
-    <a href="{{ url }}">{{ filename }}</a><br>
-{% endfor %}
-
-{# List first and second-level folders #}
-{% for foldername in folders(['*', '*/*']) %}
-    {{ foldername }}<br>
-{% endfor %}
-```
-
-The two functions work exactly the same, but `files` matches files and `folders` matches… you know. Both functions can take up to two parameters:
-
-- `patterns`: one glob pattern (string) or several (array of strings) to look for
-- `context`: path of the folder where we should start looking (by default, the project root)
 
 ### Fake latin text
 
@@ -318,6 +205,66 @@ Don't want paragraph tags?
 {{ markdown('Short and *sweet* text', inline=true) }}
 ```
 
+### Listing files and folders
+
+The `files` and `folders` functions let you list the content of a given directory, using PHP’s `glob` function.
+
+```twig
+{# List of all templates in the 'pages' directory #}
+{% for filename in files('*.twig', 'pages') %}
+    {# The '~' operator concatenates strings, and the 'replace' filter lets us
+       remove the '.twig' extension because we don’t want it in the URL. #}
+    {% set url = _base ~ 'pages/' ~ filename|replace({'.twig':''}) %}
+    <a href="{{ url }}">{{ filename }}</a><br>
+{% endfor %}
+
+{# List first and second-level folders #}
+{% for foldername in folders(['*', '*/*']) %}
+    {{ foldername }}<br>
+{% endfor %}
+```
+
+The two functions work exactly the same, but `files` matches files and `folders` matches… you know. Both functions can take up to two parameters:
+
+- `patterns`: one glob pattern (string) or several (array of strings) to look for
+- `context`: path of the folder where we should start looking (by default, the project root)
+
+
+Advanced configuration
+----------------------
+
+You can change or add some configuration in the `twigexpress.json` file.
+
+- `autoescape`: should Twig escape content when using `{{ myVar }}`? (Defaults to true.)
+- `strict_variables`: should we show an error when trying to use an unknown variable? (Defaults to true.)
+- `namespaces`: define Twig namespace.
+
+### Defining a Twig namespace
+
+Define Twig namespaces like this in `twigexpress.json`:
+
+```json
+{
+    "namespaces": {
+        "my_namespace": "./relative/path/to/dir",
+        "OtherNamespace": "/Users/me/Sites/something"
+    }
+}
+```
+
+The key is your Twig namespace name, and the value must be a path to an existing directory. This path must be an absolute path (e.g. `/var/www/my-website` or `C:/WWW/MyWebsite`), or it must start with `./` for a relative path starting from the site’s root dir.
+
+### Using namespaces in templates
+
+Namespaces can be used with `{% include %}` or the `source()` function in templates:
+
+```twig
+{% extends '@my_namespace/layout.twig' %}
+
+{% block content %}
+  {{ source('@OtherNamespace/subdir/something.css') }}
+{% endblock %}
+```
 
 License info
 ------------
@@ -334,9 +281,6 @@ License info
 [DOWNLOAD]: https://github.com/gradientz/twig-express/archive/download.zip
 [JSON_EXAMPLE]: https://en.wikipedia.org/wiki/JSON#Example
 [TWIG_HOME]: http://twig.sensiolabs.org/
-[TWIG_DOC]: http://twig.sensiolabs.org/documentation
-[TWIG_INTRO]: http://twig.sensiolabs.org/doc/templates.html
-[TWIG_INHERITANCE]: http://twig.sensiolabs.org/doc/templates.html#template-inheritance
 [TWIG_LIB]: https://github.com/twigphp/Twig
 [MIME_LIB]: https://github.com/karwana/php-mime
 [Parsedown]: http://parsedown.org/
