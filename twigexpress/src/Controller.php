@@ -221,23 +221,31 @@ class Controller
     {
         Utils::sendHeaders($statusCode, 'text/html');
 
-        // Prepare the <title> and breadcrumbs
+        // Prepare the <title>
         $base  = rtrim($this->baseUrl, '/');
         $host  = $_SERVER['HTTP_HOST'] . ($base ? $base : '');
         $title = $host;
         $url   = trim($this->requestPath, '/');
         $path  = $this->realFilePath;
-        if ($path) $path = trim(str_replace($this->docRoot, '', $path), '/');
-        if ($url) $title = array_pop(explode('/', $url)) . ' - ' . $title;
+        if ($path) {
+            $path = trim(str_replace($this->docRoot, '', $path), '/');
+        }
+        if ($url) {
+            $parts = explode('/', $url);
+            $title = array_pop($parts) . ' - ' . $title;
+        }
         if (in_array((string) $statusCode, ['403', '404', '500'])) {
             $title = 'Error: ' . $title;
         }
+
+        // Prepare breadcrumbs
         $crumbPath = $path ? $path : $url;
         $separateTwigExt = $statusCode !== 404;
         $crumbs = Utils::makeBreadcrumbs($base, $host, $crumbPath, $separateTwigExt);
-        $active = count($crumbs);
+
         // Rewind breadcrumbs by one step if the current URL is for a Twig
         // template but does not have the '.twig' extension.
+        $active = count($crumbs);
         if ($path && substr($path, -5) === '.twig' && substr($url, -5) !== '.twig') {
             $active--;
         }
