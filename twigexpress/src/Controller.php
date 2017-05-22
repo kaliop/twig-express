@@ -309,7 +309,8 @@ class Controller
     {
         $source = file_get_contents($path);
         return $this->showPage(200, [
-            'code' => Utils::formatCodeBlock($source, true)
+            'code' => Utils::formatCodeBlock($source, true),
+            'navBorder' => false
         ]);
     }
 
@@ -366,7 +367,8 @@ class Controller
         return $this->showPage(200, [
             'fileList' => $fileList,
             'dirList' => $dirList,
-            'message' => $message
+            'message' => $message,
+            'navBorder' => $message !== ''
         ]);
     }
 

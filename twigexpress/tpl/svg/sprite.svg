@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-    <symbol id="icon-folder" viewBox="0 0 32 32">
-        <path d="M30 4H15.8l-1.2-2.5C14 .2 13 0 12 0H2C1 0 0 1 0 2v28c0 1 1 2 2 2h28c1 0 2-1 2-2V6c0-1-1-2-2-2z"/>
-    </symbol>
-    <symbol id="icon-file" viewBox="0 0 28 32">
-        <path d="M2 0h16l10 10v20c0 1-1 2-2 2H2c-1 0-2-1-2-2V2c0-1 1-2 2-2zm14 12h10l-2-2h-6V4l-2-2v10z"/>
-    </symbol>
+  <symbol id="icon-folder" viewBox="0 0 32 32">
+    <path d="M30 4H15.8l-1.2-2.5C14 .2 13 0 12 0H2C1 0 0 1 0 2v28c0 1 1 2 2 2h28c1 0 2-1 2-2V6c0-1-1-2-2-2z"/>
+  </symbol>
+  <symbol id="icon-file" viewBox="0 0 28 32">
+    <path d="M2 0h16l10 10v20c0 1-1 2-2 2H2c-1 0-2-1-2-2V2c0-1 1-2 2-2zm14 12h10l-2-2h-6V4l-2-2v10z"/>
+  </symbol>
 </svg>
