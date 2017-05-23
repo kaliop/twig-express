@@ -32,6 +32,16 @@
   --vibrant-green: #44ea3c;
 }
 
+::selection {
+  color: var(--lightest-gray);
+  background-color: var(--red-darker);
+}
+
+::-moz-selection {
+  color: var(--lightest-gray);
+  background-color: var(--red-darker);
+}
+
 body {
   box-sizing: border-box;
   margin: 0;
@@ -79,11 +89,16 @@ h1 {
 }
 
 h2 {
-  margin: 1rem 0;
+  margin: 2rem 0 1rem;
   font-size: 125%;
   font-weight: 600;
   line-height: 1.3;
   color: var(--lighter-black);
+}
+
+h3, h4, h5, h6 {
+  margin: 1.5rem 0 1rem;
+  font-size: 100%;
 }
 
 a {
@@ -156,8 +171,29 @@ p {
   margin: 1em 0;
 }
 
+pre, code {
+  font-family: monospace, monospace;
+  font-family: var(--code);
+}
+
+pre {
+  -webkit-tab-size: 2;
+  -moz-tab-size: 2;
+  tab-size: 2;
+}
+
 code {
+  font-size: 93.75%;
   color: var(--dim-blue);
+}
+
+pre code {
+  display: block;
+}
+
+pre mark {
+  color: white;
+  background: black;
 }
 
 .error {
@@ -181,6 +217,30 @@ main:empty {
   height: 1em;
   vertical-align: -.15em;
   fill: currentColor;
+}
+
+/* Text content (e.g. for markdown previews) */
+
+.Content {
+  max-width: 52em;
+  margin: 0 auto;
+}
+
+.Content h1 {
+  font-size: 1.8rem;
+}
+
+.Content h2 {
+  padding-bottom: .75rem;
+  border-bottom: solid 1px;
+  border-color: var(--lighter-gray);
+}
+
+@media (min-width: 900px) {
+  .Content h1 {
+    margin-bottom: 1.6rem;
+    font-size: 2.2rem;
+  }
 }
 
 /* List of files or folders */
@@ -277,25 +337,7 @@ main:empty {
 
 /* Code block */
 
-pre, code {
-  font-family: monospace, monospace;
-  font-family: var(--code);
-}
-
-code {
-  font-size: 93.75%;
-}
-
-pre code {
-  display: block;
-}
-
-pre mark {
-  color: white;
-  background: black;
-}
-
-.Code {
+.Code, .Content pre > code[class^="language-"] {
   position: relative;
   overflow: hidden;
   margin: -1rem;
@@ -308,6 +350,21 @@ pre mark {
   line-height: 1.5;
   color: var(--base-gray);
   background: var(--black);
+}
+
+.Content pre > code[class^="language-"] {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .Content pre > code[class^="language-"] {
+    margin: 0;
+    padding: 1.25rem;
+    border-radius: 2px;
+  }
 }
 
 .Code--mark code > :not(mark),

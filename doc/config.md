@@ -7,10 +7,10 @@ Configuration goes in in `twigexpress.json` file at the root of your project (i.
 
 ```json
 {
-    "autoescape": true,
-    "strict_variables": true,
-    "globals": {},
-    "namespaces": {}
+  "autoescape": true,
+  "strict_variables": true,
+  "globals": {},
+  "namespaces": {}
 }
 ```
 
@@ -20,7 +20,7 @@ Whether Twig should escape HTML content when using `{{ myVar }}`?
 
 ```json
 {
-    "autoescape": true
+  "autoescape": true
 }
 ```
 
@@ -32,7 +32,7 @@ Should we show an error when trying to use an undefined variable?
 
 ```json
 {
-    "strict_variables": true
+  "strict_variables": true
 }
 ```
 
@@ -44,9 +44,9 @@ Defines global variables to inject in all templates.
 
 ```json
 {
-    "globals": {
-        "variableName": "Variable value"
-    }
+  "globals": {
+    "variableName": "Variable value"
+  }
 }
 ```
 
@@ -58,10 +58,10 @@ Defines Twig template namespaces that can be used when extending or including te
 
 ```json
 {
-    "namespaces": {
-        "my_namespace": "./relative/path/to/dir",
-        "OtherNamespace": "/Users/me/Sites/something"
-    }
+  "namespaces": {
+    "my_namespace": "./relative/path/to/dir",
+    "OtherNamespace": "/Users/me/Sites/something"
+  }
 }
 ```
 

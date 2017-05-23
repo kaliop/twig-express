@@ -4,28 +4,39 @@ namespace Gradientz\TwigExpress;
 
 class Controller
 {
+    /** @var array - User configuration */
+    public $config;
+
+    /** @var array - Valid Twig namespaces (from user configuration) */
+    public $namespaces = [];
+
     /** @var string - Full path of project/server root */
     public $docRoot;
-    /** @var string - Requested path (from root dir) */
-    public $requestPath;
+
     /** @var string - URL prefix if project root is below an Apache DocumentRoot */
-    public $baseUrl;
-    /** @var array - Breadcrumbs for the current request */
-    public $crumbs;
+    private $baseUrl;
+
+    /** @var string - Requested path (from root dir) */
+    private $requestPath;
 
     /** @var string - Full path of the file we found to serve this request */
-    public $realFilePath;
-    /** @var string - Type of rendering, one of 'file', 'twig', 'dir' or '404' */
-    public $renderMode;
+    private $realFilePath;
 
-    /** @var array - User configuration */
-    private $config;
-    /** @var array - Valid Twig namespaces (from user configuration) */
-    private $namespaces = [];
+    /** @var array */
+    private $navInfo;
+
+    /** @var array */
+    private $layoutAssets;
+
+    /** @var string - Type of rendering, one of 'file', 'twig', 'dir' or '404' */
+    private $renderMode;
+
     /** @var array - Where we should look for a JSON config file */
     private $configFiles = ['twigexpress.json'];
+
     /** @var array|string - Glob pattern for files to exclude in dir listings */
-    private $excludeFiles = ['twigexpress.json', '*.{php,phar}', '.*'];
+    private $excludeFiles = ['*.{php,phar}', '.*'];
+
     /** @var array|string - Glob pattern for folders to exclude in dir listings */
     private $excludeDirs = '.*';
 
@@ -99,15 +110,14 @@ class Controller
         $content = file_get_contents($file);
         $config = json_decode($content, true);
         if ($jsonError = json_last_error()) {
-            echo $this->showPage(500, [
+            $this->showPage(500, [
                 'metaTitle' => 'JSON: ' . json_last_error_msg(),
                 'title' => 'Problem while parsing your JSON config (' . json_last_error_msg() . ')',
                 'message' => 'In <code class="error">'.$file.'</code><br>' .
                     'JSON syntax is rather restrictive, so make sure there’s no syntax error.<br> ' .
                     '<a target="_blank" href="http://jsonlint.com/?json=' . rawurlencode($content) .
                     '">Test it online with JSONLint</a>.'
-            ]);
-            exit;
+            ], true);
         }
         return $config;
     }
@@ -129,12 +139,11 @@ class Controller
                 $path = $this->docRoot . '/' . substr($path, 2);
             }
             if (!is_dir($path)) {
-                echo $this->showPage(500, [
+                $this->showPage(500, [
                     'metaTitle' => 'Config Error: Bad Twig namespace',
                     'title' => 'Config Error: Bad Twig namespace',
                     'message' => "<code>\"$name\"</code>: <code>\"$path\"</code> is not a directory."
-                ]);
-                exit;
+                ], true);
             }
             $valid[$name] = $path;
         }
@@ -162,14 +171,13 @@ class Controller
             $real = $basePath;
             $mode = 'dir';
             $candidates[] = $basePath . '/index.twig';
-            $candidates[] = $basePath . '/index.html.twig';
             $candidates[] = $basePath . '/index.html';
         }
         else {
+            $ext = pathinfo($basePath, PATHINFO_EXTENSION);
             $candidates[] = $basePath;
-            if (substr($basePath, -5) !== '.twig') {
-                $candidates[] = $basePath . '.twig';
-            }
+            if ($ext !== 'twig') $candidates[] = $basePath . '.twig';
+            if ($ext !== 'md')   $candidates[] = $basePath . '.md';
         }
         foreach ($candidates as $c) {
             if (is_file($c)) {
@@ -179,7 +187,10 @@ class Controller
         }
         if ($match) {
             $real = $match;
-            $mode = substr($match, -5) === '.twig' ? 'twig' : 'file';
+            $rext = pathinfo($real, PATHINFO_EXTENSION);
+            $mode = 'file';
+            if ($rext === 'twig') $mode = 'twig';
+            if ($rext === 'md')   $mode = 'markdown';
         }
         return [
             'path' => $real,
@@ -195,25 +206,17 @@ class Controller
     {
         if ($this->twigEnv !== null) {
             return $this->twigEnv;
+        } else {
+            return $this->twigEnv = new TwigEnv(
+                $this,
+                [
+                    '_get' => $_GET,
+                    '_post' => $_POST,
+                    '_cookie' => $_COOKIE,
+                    '_base' => $this->baseUrl
+                ]
+            );
         }
-        // Load all the things we need for the twig environment
-        require_once __DIR__ . '/TwigEnv.php';
-        require_once __DIR__ . '/../lib/LoremIpsum/LoremIpsum.php';
-        require_once __DIR__ . '/../lib/Parsedown/Parsedown.php';
-        require_once __DIR__ . '/../lib/Twig/Autoloader.php';
-        \Twig_Autoloader::register();
-
-        return $this->twigEnv = new TwigEnv(
-            $this->docRoot,
-            $this->config,
-            $this->namespaces,
-            [
-                '_get' => $_GET,
-                '_post' => $_POST,
-                '_cookie' => $_COOKIE,
-                '_base' => $this->baseUrl
-            ]
-        );
     }
 
     /**
@@ -227,6 +230,9 @@ class Controller
             Utils::sendHeaders('200', 'application/octet-stream', $this->realFilePath);
             return readfile($this->realFilePath);
         }
+        if ($this->renderMode === 'markdown') {
+            return $this->showMarkdown($this->realFilePath);
+        }
         if ($this->renderMode === 'twig') {
             // Was this a request for a twig source to begin with?
             if (substr($this->requestPath, -5) === '.twig') {
@@ -234,7 +240,7 @@ class Controller
             }
             try {
                 $templateId = str_replace($this->docRoot.'/', '', $this->realFilePath);
-                $result = $this->twig()->render($templateId);
+                $result = $this->twig()->renderUserTemplate($templateId);
                 Utils::sendHeaders('200', 'text/html', $this->realFilePath);
                 return $result;
             }
@@ -257,47 +263,16 @@ class Controller
      * @param array $data Variables for the error template
      * @return string
      */
-    private function showPage($statusCode=404, $data=[])
+    private function showPage($statusCode=404, $data=[], $print=false)
     {
         Utils::sendHeaders($statusCode, 'text/html');
-
-        // Prepare the <title>
-        $base  = rtrim($this->baseUrl, '/');
-        $host  = $_SERVER['HTTP_HOST'] . ($base ? $base : '');
-        $title = $host;
-        $url   = trim($this->requestPath, '/');
-        $path  = $this->realFilePath;
-        if ($path) {
-            $path = trim(str_replace($this->docRoot, '', $path), '/');
+        $html = $this->twig()->renderTwigExpressPage($data);
+        if ($print) {
+            echo $html;
+            exit;
+        } else {
+            return $html;
         }
-        if ($url) {
-            $parts = explode('/', $url);
-            $title = array_pop($parts) . ' - ' . $title;
-        }
-        if (in_array((string) $statusCode, ['403', '404', '500'])) {
-            $title = 'Error: ' . $title;
-        }
-
-        // Prepare breadcrumbs
-        $crumbPath = $path ? $path : $url;
-        $separateTwigExt = $statusCode !== 404;
-        $crumbs = Utils::makeBreadcrumbs($base, $host, $crumbPath, $separateTwigExt);
-
-        // Rewind breadcrumbs by one step if the current URL is for a Twig
-        // template but does not have the '.twig' extension.
-        $active = count($crumbs);
-        if ($path && substr($path, -5) === '.twig' && substr($url, -5) !== '.twig') {
-            $active--;
-        }
-
-        // Prepare page data
-        $data = array_merge([
-            'metaTitle' => $title,
-            'crumbs' => $crumbs,
-            'activeCrumb' => $active
-        ], $data);
-
-        return $this->twig()->renderPage($data);
     }
 
     /**
@@ -311,6 +286,19 @@ class Controller
         return $this->showPage(200, [
             'code' => Utils::formatCodeBlock($source, true),
             'navBorder' => false
+        ]);
+    }
+
+    /**
+     * Show a rendered Markdown file
+     * @param $path
+     * @return string
+     */
+    private function showMarkdown($path)
+    {
+        $source = file_get_contents($path);
+        return $this->showPage(200, [
+            'content' => Utils::processMarkdown($source)
         ]);
     }
 
@@ -350,8 +338,10 @@ class Controller
 
         foreach(Utils::glob('*', $root, 'file') as $name) {
             if (!in_array($name, $nope)) {
-                if (substr($name, -5) === '.twig') $name = substr($name, 0, -5);
-                $fileList[] = ['name' => $name, 'url' => $base.$name];
+                $ext = pathinfo($name, PATHINFO_EXTENSION);
+                $noExt = pathinfo($name, PATHINFO_FILENAME);
+                $url = $base . (in_array($ext, ['twig', 'md']) ? $noExt : $name);
+                $fileList[] = ['name' => $name, 'url' => $url];
             }
         }
         foreach(Utils::glob('*', $root, 'dir') as $name) {
@@ -399,5 +389,105 @@ class Controller
         }
 
         return $this->showPage(500, $data);
+    }
+
+    /**
+     * Show a basic HTML page/message.
+     * Fallback for when internal page template fails.
+     */
+    public function showMinimalPage($data=[]) {
+        Utils::sendHeaders(500, 'text/html');
+        $TAG_MAP = [
+            'title' => 'h1',
+            'message' => 'blockquote',
+            'content' => 'div',
+            'code' => 'pre',
+            'error' => 'pre'
+        ];
+        $html = '';
+        foreach($TAG_MAP as $name => $tag) {
+            $content = array_key_exists($name, $data) ? $data[$name] : '';
+            if ($content) {
+                $html .= $tag === 'pre' ? '<pre style="white-space:pre-wrap">' : "<$tag>";
+                $html .= $content . "</$tag>\n";
+            }
+        }
+        echo $html;
+        exit;
+    }
+
+    /**
+     * Figure out a <title> and breadcrumb navigation for a page,
+     * based on its URL
+     * @return array
+     */
+    public function getNavInfo()
+    {
+        if (is_array($this->navInfo)) {
+            return $this->navInfo;
+        }
+        // Return docroot folder name (or parent/folder, if short) as site name
+        $folder = basename($this->docRoot);
+        $parent = basename(dirname($this->docRoot));
+        $siteName = strlen($folder) < 5 ? "$parent/$folder" : $folder;
+        // Make breadcrumbs
+        $path = rtrim($this->requestPath, '/');
+        $_url_ = '/';
+        $crumbs = [['url' => $_url_, 'name' => $siteName]];
+        $folders = array_filter(explode('/', $path));
+        $last = array_pop($folders);
+        foreach ($folders as $folder) {
+            $_url_ .= $folder . '/';
+            $crumbs[] = ['url' => $_url_, 'name' => $folder];
+        }
+        // Set last known item as active
+        $_active_ = count($crumbs) - 1;
+        // Add last item (sometimes as two separate items for filename/extension)
+        if ($last) {
+            $real = pathinfo($this->realFilePath, PATHINFO_BASENAME);
+            $path_ext = pathinfo($last, PATHINFO_EXTENSION);
+            $real_ext = pathinfo($real, PATHINFO_EXTENSION);
+            // Static files, or 404
+            if (!$real || !in_array($real_ext, ['twig', 'md'])) {
+                $_active_ += 1;
+                $crumbs[] = ['url' => $_url_.$last, 'name' => $last];
+            }
+            else {
+                $real_noext = pathinfo($real, PATHINFO_FILENAME);
+                $crumbs[] = ['url' => $_url_.$real_noext, 'name' => $real_noext];
+                $crumbs[] = ['url' => $_url_.$real, 'name' => '.'.$real_ext];
+                $_active_ += $real_ext === $path_ext ? 2 : 1;
+            }
+        }
+        // Add 'active' attribute to items
+        for ($i=0, $max=count($crumbs); $i < $max; $i++) {
+            $crumbs[$i]['active'] = $i === $_active_;
+        }
+        return $this->navInfo = [
+            'title' => $siteName,
+            'crumbs' => $crumbs
+        ];
+    }
+
+    /**
+     * Load as strings all the assets we want to inline in TE's main template
+     * (Using `source()` in Twig is not an option inside archives)
+     * @return array
+     */
+    public function getLayoutAssets() {
+        if (is_array($this->layoutAssets)) {
+            return $this->layoutAssets;
+        }
+        $assets = [
+            'css' => 'css/styles.css',
+            'svg' => 'svg/sprite.svg',
+            'highlightjs' => 'js/highlight.min.js'
+        ];
+        $content = [];
+        $root = dirname(__DIR__) . '/tpl/';
+        foreach ($assets as $name => $path) {
+            $content[$name] = file_get_contents($root . $path);
+        }
+        return $this->layoutAssets = $content;
     }
 }

@@ -14,6 +14,9 @@ EOL;
 }
 
 require_once __DIR__ . '/lib/Mime/Mime.php';
+require_once __DIR__ . '/lib/LoremIpsum/LoremIpsum.php';
+require_once __DIR__ . '/lib/Parsedown/Parsedown.php';
+require_once __DIR__ . '/lib/Twig/Autoloader.php';
 require_once __DIR__ . '/src/Controller.php';
 require_once __DIR__ . '/src/Utils.php';
 require_once __DIR__ . '/src/TwigEnv.php';

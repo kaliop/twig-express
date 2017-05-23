@@ -93,20 +93,18 @@ The `files` and `folders` functions let you list the content of a given director
 
 ```twig
 {# List of all templates in the 'pages' directory #}
-{% for filename in files('*.twig', 'pages') %}
-    {# The '~' operator concatenates strings, and the 'replace' filter lets us
-       remove the '.twig' extension because we don’t want it in the URL. #}
-    {% set url = _base ~ 'pages/' ~ filename|replace({'.twig':''}) %}
-    <a href="{{ url }}">{{ filename }}</a><br>
+{% for path in files('pages/*.twig') %}
+  {# The '~' operator concatenates strings, and the 'replace' filter lets us
+     remove the '.twig' extension because we don’t want it in the URL. #}
+  {% set url = path|replace({'.twig':''}) %}
+  {% set filename = path|split('/')|last %}
+  <a href="{{ url }}">{{ filename }}</a><br>
 {% endfor %}
 
 {# List first and second-level folders #}
-{% for foldername in folders(['*', '*/*']) %}
-    {{ foldername }}<br>
+{% for path in folders(['*', '*/*']) %}
+  {{ path }}<br>
 {% endfor %}
 ```
 
-The two functions work exactly the same, but `files` matches files and `folders` matches… you know. Both functions can take up to two parameters:
-
-- `patterns`: one glob pattern (string) or several (array of strings) to look for
-- `context`: path of the folder where we should start looking (by default, the project root)
+The two functions work exactly the same, but `files` matches files and `folders` matches… you know. Both functions accept either a string or an array of strings (glob patterns).
