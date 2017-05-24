@@ -190,7 +190,10 @@ class Controller
             $rext = pathinfo($real, PATHINFO_EXTENSION);
             $mode = 'file';
             if ($rext === 'twig') $mode = 'twig';
-            if ($rext === 'md')   $mode = 'markdown';
+            if ($rext === 'md')   $mode = 'md';
+            if (in_array($rext, ['twig', 'md']) && $rext === $ext) {
+                $mode = 'source';
+            }
         }
         return [
             'path' => $real,
@@ -230,14 +233,13 @@ class Controller
             Utils::sendHeaders('200', 'application/octet-stream', $this->realFilePath);
             return readfile($this->realFilePath);
         }
-        if ($this->renderMode === 'markdown') {
+        if ($this->renderMode === 'source') {
+            return $this->showSource($this->realFilePath);
+        }
+        if ($this->renderMode === 'md') {
             return $this->showMarkdown($this->realFilePath);
         }
         if ($this->renderMode === 'twig') {
-            // Was this a request for a twig source to begin with?
-            if (substr($this->requestPath, -5) === '.twig') {
-                return $this->showSource($this->realFilePath);
-            }
             try {
                 $templateId = str_replace($this->docRoot.'/', '', $this->realFilePath);
                 $result = $this->twig()->renderUserTemplate($templateId);
@@ -276,15 +278,17 @@ class Controller
     }
 
     /**
-     * Show a Twig file with syntax highlighting
+     * Show a file's content with syntax highlighting
      * @param $path
      * @return string
      */
     private function showSource($path)
     {
         $source = file_get_contents($path);
+        $lang = pathinfo($path, PATHINFO_EXTENSION);
         return $this->showPage(200, [
-            'code' => Utils::formatCodeBlock($source, true),
+            'code' => Utils::formatCodeBlock($source, $lang !== 'md'),
+            'codeLang' => $lang,
             'navBorder' => false
         ]);
     }
@@ -385,7 +389,7 @@ class Controller
         if (file_exists($file = $this->docRoot.'/'.$template)) {
             $code = file_get_contents($file);
             $data['code'] = Utils::formatCodeBlock($code, true, $line, 5);
-            $data['codeLang'] = Utils::getHighlightLanguage($template);
+            $data['codeContext'] = Utils::getHighlightLanguage($template);
         }
 
         return $this->showPage(500, $data);

@@ -11,6 +11,8 @@
   {% set message = message ?? '' %}
   {% set content = content ?? '' %}
   {% set code = code ?? '' %}
+  {% set codeLang = codeLang ?? 'twig' %}
+  {% set codeContext = codeContext ?? '' %}
 
   {# File listing #}
   {% set dirList = dirList ?? [] %}
@@ -79,14 +81,14 @@
       {%- endfor %}
     </ul>
   {%- endif %}
-  {%- if content %}
-    <div class="Content">{{ content | raw }}</div>
-  {%- endif %}
+  <div class="Content">{% block content %}
+    {%- if content %}{{ content | raw }}{%- endif %}
+  {% endblock %}</div>
   {%- if code %}
     <pre class="Code
       {%- if ' data-num=' in code %} Code--numbers{% endif -%}
       {%- if '<mark>' in code %} Code--mark{% endif -%}
-  "><code class="twig">
+  "><code class="{{ codeLang }}">
       {{- code|raw -}}
   </code></pre>
   {%- endif %}
@@ -96,7 +98,7 @@
 
 {% if code or 'class="language-' in content %}
   <script>
-    {%- if codeLang ?? false %}window.twigSubLanguage = '{{ codeLang }}';{% endif -%}
+    {%- if codeContext %}window.twigSubLanguage = '{{ codeContext }}';{% endif -%}
     {{- assets.highlightjs|replace({'</script': '<\\/script'})|raw -}}
     ;hljs.initHighlighting();
   </script>

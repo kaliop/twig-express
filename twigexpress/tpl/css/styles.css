@@ -226,6 +226,10 @@ main:empty {
   margin: 0 auto;
 }
 
+.Content:empty {
+  display: none;
+}
+
 .Content h1 {
   font-size: 1.8rem;
 }
@@ -350,6 +354,10 @@ main:empty {
   line-height: 1.5;
   color: var(--base-gray);
   background: var(--black);
+}
+
+.Code > code {
+  color: inherit;
 }
 
 .Content pre > code[class^="language-"] {
