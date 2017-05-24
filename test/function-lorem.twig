@@ -1,45 +1,55 @@
-{% include 'test/styles.css.twig' with {tags:1} %}
+{% extends 'test/_layout.twig' %}
+
+{% block content %}
 
 <h1>Twig function: <code>lorem</code></h1>
 
-<h2><code>lorem()</code></h2>
-<p>Default: one to seven words.</p>
+<h2>Output a string: words, sentences, paragraphs</h2>
+
+<h3><code>lorem()</code></h3>
+<p>Default output: one to seven words.</p>
 <blockquote>
 {{ lorem() }}
 </blockquote>
 
-<h2><code>lorem('15 words')</code></h2>
-<p>Outpout 15 words.</p>
+<h3><code>lorem('15 words')</code></h3>
 <blockquote>
 {{ lorem('15 words') }}
 </blockquote>
 
-<h2><code>lorem('[9w]')|join(', ')</code></h2>
-<p>Outpout 5 to 9 words joined with commas.</p>
-<blockquote>
-    {{ lorem('[5-9w]')|join(', ') }}
-</blockquote>
-
-<h2><code>lorem('1-5 sentences')</code></h2>
-<p>Output between 1 and 5 sentences.</p>
+<h3><code>lorem('1-5 sentences')</code></h3>
 <blockquote>
 {{ lorem('1-5 sentences') }}
 </blockquote>
 
-<h2><code>lorem('2 paragraphs', 'p') | raw</code></h2>
-<p>Get 2 paragraphs, each wrapped in a <code>&lt;p></code> tag.</p>
+<h3><code>lorem('2p')</code></h3>
+<p>Paragraphs can be a bit long.</p>
 <blockquote>
-{{ lorem('2 paragraphs', 'p') | raw }}
+{{ lorem('2p') }}
 </blockquote>
 
-<h2><code>{% verbatim %}{% for x in lorem('[5s]') %}<br>
-&lt;li>{{ x }}&lt;/li><br>
-{% endfor %}{% endverbatim %}</code></h2>
-<p>Wrap the command in brackets to get and array.</p>
+<h3><code>{% verbatim %}{% for i in 1..random(2)+3 %} &lt;p>{{ lorem('1-3s') }}&lt;/p> {% endfor %}{% endverbatim %}</code></h3>
+<p>So sometimes generating sentences is better?</p>
+<blockquote>
+{% for i in 1..random(2)+3 %}
+  <p>{{ lorem('1-3s') }}</p>
+{% endfor %}
+</blockquote>
+
+<h2>Wrap the command in brackets to get and array</h2>
+
+<h3><code>lorem('[9w]')|join(', ')</code></h3>
+<blockquote>
+  {{ lorem('[5-9w]')|join(', ') }}
+</blockquote>
+
+<h3><code>{% verbatim %}{% for x in lorem('[5s]') %} &lt;li>{{ x }}&lt&lt;/li> {% endfor %}{% endverbatim %}</code></h3>
 <blockquote>
 <ul>
 {% for x in lorem('[5s]') %}
-    <li>{{ x }}</li>
+  <li>{{ x }}</li>
 {% endfor %}
 </ul>
 </blockquote>
+
+{% endblock %}

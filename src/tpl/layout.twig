@@ -6,7 +6,7 @@
   {% set navBorder = navBorder ?? true %}
 
   {# Content #}
-  {% set metaTitle = metaTitle ?? navInfo.title %}
+  {% set metaTitle = metaTitle ?? title ?? navInfo.title %}
   {% set title = title ?? '' %}
   {% set message = message ?? '' %}
   {% set content = content ?? '' %}
@@ -34,8 +34,10 @@
   <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
   {% if metaTitle ?? false %}<title>{{ metaTitle }}</title>{% endif -%}
+  {% block styles %}
   <style>.icon{width:1em;height:1em;}</style>
   <style>{{ assets.css | raw }}</style>
+  {% endblock %}
 </head>
 <body>
 
@@ -46,7 +48,7 @@
     <nav{% if navBorder %} class="border"{% endif %}>
       {% for item in navInfo.crumbs %}
         {%- spaceless %}
-          {% if not loop.first and not (loop.last and item.name starts with '.') %}
+          {% if not loop.first and not item.ext %}
             <span class="sep">/</span>
           {% endif %}
           {% if item.active %}
@@ -88,14 +90,13 @@
     <pre class="Code
       {%- if ' data-num=' in code %} Code--numbers{% endif -%}
       {%- if '<mark>' in code %} Code--mark{% endif -%}
-  "><code class="{{ codeLang }}">
+  "><code class="{{ codeLang == 'md' ? 'markdown' : codeLang }}">
       {{- code|raw -}}
   </code></pre>
   {%- endif %}
 {% endblock %}</main>
 
-{% block footer %}{% endblock %}
-
+{% block scripts %}
 {% if code or 'class="language-' in content %}
   <script>
     {%- if codeContext %}window.twigSubLanguage = '{{ codeContext }}';{% endif -%}
@@ -103,6 +104,7 @@
     ;hljs.initHighlighting();
   </script>
 {% endif %}
+{% endblock %}
 
 </body>
 </html>

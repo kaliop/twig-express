@@ -1,20 +1,25 @@
-{% include 'test/styles.css.twig' with {tags:1} %}
+{% extends 'test/_layout.twig' %}
 
-<h1>TwigExpress tests</h1>
+{% block content %}
+  <h1>TwigExpress tests</h1>
 
-<p><strong>Scope:</strong> We’re only testing features specific to TwigExpress.</p>
-<p>Manual tests for now. We’ll look at PHP testing tools later on.</p>
+  <p><strong>Scope:</strong> We’re only testing features specific to TwigExpress.</p>
+  <p>Manual tests for now. We’ll look at PHP testing tools later on.</p>
 
-<table>
+  <table>
     <tr>
-        <th>Page</th>
-        <th>Twig source</th>
+      <th>Page</th>
+      <th>Twig source</th>
     </tr>
-{% for name in files('*.twig', 'test') if name != 'index.twig' %}
-{% set url = name|replace({'.twig':''}) %}
+  {% for path in files('test/*.twig') %}
+    {%- set url = _base ~ path|replace({'.twig':''}) %}
+    {%- set name = url|split('/')|last %}
+    {% if name not in ['index', '_layout'] %}
     <tr>
-        <td><a href="{{ _base }}test/{{ url }}">{{ url }}</a></td>
-        <td><a href="{{ _base }}test/{{ name }}">{{ name }}</a></td>
+      <td><a href="{{ url }}">{{ name }}</a></td>
+      <td><a href="{{ url }}.twig">{{ name }}.twig</a></td>
     </tr>
-{% endfor %}
-</table>
+    {% endif %}
+  {% endfor %}
+  </table>
+{% endblock %}

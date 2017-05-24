@@ -1,7 +1,7 @@
 <?php
 
 $NAME = 'twigexpress.phar';
-$SRC  = __DIR__ . '/twigexpress';
+$SRC  = __DIR__ . '/src';
 
 if (PHP_SAPI !== 'cli') {
     echo 'This script can only run on the CLI.' . PHP_EOL;

@@ -1,9 +1,10 @@
-{% include 'test/styles.css.twig' with {tags:1} %}
+{% extends 'test/_layout.twig' %}
 
-This page will show its own source code, as long as the <code>@testnamespace</code> namespace is understood:
-
-<blockquote>
+{% block content %}
+  <p>This page will show its own source code, as long as the <code>@testnamespace</code> namespace is understood:</p>
+  <blockquote>
     <pre>
-        {{- source('@testnamespace/namespace.twig')|e -}}
+      {{- source('@testnamespace/namespace.twig')|e -}}
     </pre>
-</blockquote>
+  </blockquote>
+{% endblock %}

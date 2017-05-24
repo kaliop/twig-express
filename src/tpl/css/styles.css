@@ -177,6 +177,7 @@ pre, code {
 }
 
 pre {
+  white-space: pre-wrap;
   -webkit-tab-size: 2;
   -moz-tab-size: 2;
   tab-size: 2;
@@ -231,7 +232,8 @@ main:empty {
 }
 
 .Content h1 {
-  font-size: 1.8rem;
+  margin: 1em 0 .66em;
+  font-size: 1.8em;
 }
 
 .Content h2 {
@@ -242,8 +244,7 @@ main:empty {
 
 @media (min-width: 900px) {
   .Content h1 {
-    margin-bottom: 1.6rem;
-    font-size: 2.2rem;
+    font-size: 2.2em;
   }
 }
 
@@ -358,6 +359,11 @@ main:empty {
 
 .Code > code {
   color: inherit;
+}
+
+.Code > code.markdown,
+.Code > code.txt {
+  color: var(--lighter-gray);
 }
 
 .Content pre > code[class^="language-"] {

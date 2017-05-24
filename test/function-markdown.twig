@@ -1,4 +1,6 @@
-{% include 'test/styles.css.twig' with {tags:1} %}
+{% extends 'test/_layout.twig' %}
+
+{% block content %}
 
 <h1>Twig function: <code>markdown</code></h1>
 
@@ -25,3 +27,5 @@
 <blockquote>
 {{ markdown(source('README.md')) | raw }}
 </blockquote>
+
+{% endblock %}

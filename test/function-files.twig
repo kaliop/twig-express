@@ -1,4 +1,6 @@
-{% include 'test/styles.css.twig' with {tags:1} %}
+{% extends 'test/_layout.twig' %}
+
+{% block content %}
 
 <h1>Twig functions: <code>files</code> and <code>folders</code></h1>
 
@@ -8,8 +10,10 @@
 <pre>{{ dump(folders(['*', '*/*', '*/*/*'])) }}</pre>
 </blockquote>
 
-<h2><code>dump( files('*.twig', 'test') )</code></h2>
+<h2><code>dump( files('test/*.twig') )</code></h2>
 <p>All Twig files in the <code>test</code> folder.</p>
 <blockquote>
-<pre>{{ dump(files('*.twig', 'test')) }}</pre>
+<pre>{{ dump(files('test/*.twig')) }}</pre>
 </blockquote>
+
+{% endblock %}

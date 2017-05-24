@@ -66,7 +66,7 @@ class Utils
         if (preg_match('/(text|xml|svg|javascript|json)/', $type)) {
             $typeHeader .= ';charset=utf-8';
         }
-        header('HTTP/1.1 '.$code.' '.$statuses[$code]);
+        header("HTTP/1.1 $code $statuses[$code]");
         header($typeHeader);
     }
 
@@ -237,7 +237,7 @@ class Utils
      * @param boolean $inline Do not output paragraph-level tags
      * @return string
      */
-    static function processMarkdown($text, $inline=false)
+    static function processMarkdown($text='', $inline=false)
     {
         // We might end up with Twig objects in some cases
         $value = (string) $text;

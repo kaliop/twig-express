@@ -1,7 +1,9 @@
 {
-    "autoescape": true,
-    "strict_variables": true,
-    "namespaces": {
-        "testnamespace": "./test"
-    }
+  "debug_mode": true,
+  "strict_variables": true,
+  "autoescape": true,
+  "namespaces": {
+    "testnamespace": "./test"
+  },
+  "allow_only": ["twig"]
 }

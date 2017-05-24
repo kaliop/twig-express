@@ -1,0 +1,12 @@
+{% extends twigexpress_layout() %}
+
+{% block styles %}
+  {{ parent() }}
+  <style>
+    blockquote { margin: 1em 0; padding: 1em; border: solid 1px #aaa; font-size: 85%; background: #f4f4f4; }
+    table { margin: 3em 0; border-collapse: collapse; }
+    th { text-align: left; padding: .5em 1em; border: solid 1px #f0f0f0; }
+    td { padding: 0; border: solid 1px #f0f0f0; }
+    td a { display: block; padding: .5em 1em; text-decoration: none; }
+  </style>
+{% endblock %}

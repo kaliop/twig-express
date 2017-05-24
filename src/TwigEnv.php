@@ -42,11 +42,12 @@ class TwigEnv
     {
         Twig_Autoloader::register();
         $this->controller = $controller;
-        $this->tplRoot = dirname(__DIR__) . '/tpl/';
+        $this->tplRoot = __DIR__ . '/tpl/';
         $userConfig = $controller->config;
         $namespaces = $controller->namespaces;
 
         // Merge configs before calling the actual environment constructor
+        $this->defaults['strict_variables'] = $controller->debugMode;
         $config = $this->defaults;
 
         if (is_array($userConfig)) {
@@ -66,12 +67,48 @@ class TwigEnv
 
         // Preload the base layout template for navigation pages
         try {
-            if ($layout = file_get_contents($this->tplRoot . 'layout.twig')) {
-                $this->baseLayout = $this->env->createTemplate($layout);
+            $layoutPath = $this->tplRoot . 'layout.twig';
+            if ($tpl = file_get_contents($layoutPath)) {
+                $this->baseLayout = $this->env->createTemplate($tpl);
+            } else {
+                $this->fallbackErrorPage(['error' => "Cannot find template '$layoutPath'"]);
             }
         } catch (Twig_Error $e) {
-            $controller->showMinimalPage(['error' => $e]);
+            $this->fallbackErrorPage(['error' => $e]);
         }
+    }
+
+    /**
+     * Render a Twig template
+     * @param string $template
+     * @param array $data
+     * @return string
+     */
+    public function renderUserTemplate($template, $data=[])
+    {
+        return $this->env->render($template, $data);
+    }
+
+    /**
+     * Render our internal Twig template
+     * @param array $data
+     * @return string
+     */
+    public function renderTwigExpressPage($data=[])
+    {
+        $content = '';
+        if ($this->baseLayout) {
+            try {
+                $content = $this->baseLayout->render($data);
+            }
+            catch (Twig_Error $error) {
+                $this->fallbackErrorPage(array_merge($data, ['error' => $error]));
+            }
+        }
+        else {
+            $this->fallbackErrorPage($data);
+        }
+        return $content;
     }
 
     /**
@@ -89,6 +126,11 @@ class TwigEnv
         }
         $env = new Twig_Environment($loader, $config);
 
+        // Expose the Twig Express template
+        $env->addFunction(new Twig_SimpleFunction('twigexpress_layout', function() {
+            return $this->baseLayout;
+        }));
+
         // Twig function for getting the text content of TwigExpress' main layout page
         $env->addFunction(new Twig_SimpleFunction('twigexpress_layout_assets', [$this->controller, 'getLayoutAssets']));
 
@@ -101,13 +143,17 @@ class TwigEnv
         //   {% for paragraph in lorem('[10p]') %}
         //     <p>{{ paragraph }}</p>
         //   {% endfor %}
-        $env->addFunction(new Twig_SimpleFunction('lorem', 'Utils::makeLoremIpsum'));
+        $env->addFunction(new Twig_SimpleFunction('lorem', function($command='1-7w') {
+            return Utils::makeLoremIpsum($command);
+        }));
 
         // Twig filter that transforms a string with Parsedown
         // Usage:
         //   {{ markdown(someText) }}
         //   {{ markdown(someText, inline=true) }}
-        $env->addFunction(new Twig_SimpleFunction('markdown', 'Utils::processMarkdown'));
+        $env->addFunction(new Twig_SimpleFunction('markdown', function($text='', $inline=false) {
+            return Utils::processMarkdown($text, $inline);
+        }));
 
         // Twig function that lists files for one or several glob patterns
         // Usage:
@@ -135,35 +181,28 @@ class TwigEnv
     }
 
     /**
-     * Render a Twig template
-     * @param string $template
+     * Show a basic HTML page/message.
+     * Fallback for when internal page template fails.
      * @param array $data
-     * @return string
      */
-    public function renderUserTemplate($template, $data=[])
-    {
-        return $this->env->render($template, $data);
-    }
-
-    /**
-     * Render our internal Twig template
-     * @param array $data
-     * @return string
-     */
-    public function renderTwigExpressPage($data=[])
-    {
-        $content = '';
-        if ($this->baseLayout) {
-            try {
-                $content = $this->baseLayout->render($data);
-            }
-            catch (Twig_Error $error) {
-                $this->controller->showMinimalPage(array_merge($data, ['error' => $error]));
+    private function fallbackErrorPage($data=[]) {
+        Utils::sendHeaders(500, 'text/html');
+        $TAG_MAP = [
+            'title' => 'h1',
+            'message' => 'blockquote',
+            'content' => 'div',
+            'code' => 'pre',
+            'error' => 'pre'
+        ];
+        $html = '';
+        foreach($TAG_MAP as $name => $tag) {
+            $content = array_key_exists($name, $data) ? $data[$name] : '';
+            if ($content) {
+                $html .= $tag === 'pre' ? '<pre style="white-space:pre-wrap">' : "<$tag>";
+                $html .= $content . "</$tag>\n";
             }
         }
-        else {
-            $this->controller->showMinimalPage($data);
-        }
-        return $content;
+        echo $html;
+        exit;
     }
 }

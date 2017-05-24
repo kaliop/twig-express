@@ -10,6 +10,12 @@ class Controller
     /** @var array - Valid Twig namespaces (from user configuration) */
     public $namespaces = [];
 
+    /** @var bool - Allow directory browsing, showing Twig/Markdown sources, etc. */
+    public $debugMode = true;
+
+    /** @var array - Whitelist of allowed extensions (user config) */
+    public $allowOnly;
+
     /** @var string - Full path of project/server root */
     public $docRoot;
 
@@ -34,11 +40,18 @@ class Controller
     /** @var array - Where we should look for a JSON config file */
     private $configFiles = ['twigexpress.json'];
 
-    /** @var array|string - Glob pattern for files to exclude in dir listings */
-    private $excludeFiles = ['*.{php,phar}', '.*'];
+    /**
+     * @var array - Blacklist of extensions to avoid serving
+     * Not configurable, not a real security measure, don't put TwigExpress
+     * on a live server EVER thank you very much.
+     */
+    private $blockTypes = ['php', 'phar', 'htaccess', 'htpasswd', 'sql'];
 
-    /** @var array|string - Glob pattern for folders to exclude in dir listings */
-    private $excludeDirs = '.*';
+    /** @var array - Filenames for directory indexes (order sets priority) */
+    private $indexFiles = ['index.html', 'index.twig'];
+
+    /** @var array - Extensions for file types we can render (order sets priority) */
+    private $renderExt = ['twig', 'md', 'markdown'];
 
     /** @var null|TwigEnv - Our custom twig environment wrapper */
     private $twigEnv = null;
@@ -86,6 +99,14 @@ class Controller
         if (array_key_exists('namespaces', $this->config)) {
             $this->namespaces = $this->checkNamespaces($this->config['namespaces']);
         }
+        if (array_key_exists('debug_mode', $this->config)) {
+            $this->debugMode = (bool) $this->config['debug_mode'];
+        }
+        if (array_key_exists('allow_only', $this->config)) {
+            if (is_array($a = $this->config['allow_only'])) {
+                $this->allowOnly = $a;
+            }
+        }
 
         // Can we find the requested file?
         $finfo = $this->findRequestedFile($this->requestPath);
@@ -110,7 +131,7 @@ class Controller
         $content = file_get_contents($file);
         $config = json_decode($content, true);
         if ($jsonError = json_last_error()) {
-            $this->showPage(500, [
+            $this->showPage('500', [
                 'metaTitle' => 'JSON: ' . json_last_error_msg(),
                 'title' => 'Problem while parsing your JSON config (' . json_last_error_msg() . ')',
                 'message' => 'In <code class="error">'.$file.'</code><br>' .
@@ -139,7 +160,7 @@ class Controller
                 $path = $this->docRoot . '/' . substr($path, 2);
             }
             if (!is_dir($path)) {
-                $this->showPage(500, [
+                $this->showPage('500', [
                     'metaTitle' => 'Config Error: Bad Twig namespace',
                     'title' => 'Config Error: Bad Twig namespace',
                     'message' => "<code>\"$name\"</code>: <code>\"$path\"</code> is not a directory."
@@ -162,43 +183,57 @@ class Controller
         $real = null;
         $mode = '404';
 
-        // Allows loading index.html or index.twig
+        // We will look for "path(/index.html|/index.twig|.md|.twig)"
         $candidates = [];
-        $match = null;
-        $isDir = is_dir($basePath);
-        if ($isDir) {
-            // Might be overwritten if we find one of the candidates
+        $pathExt = pathinfo($basePath, PATHINFO_EXTENSION);
+
+        // create list of candidate file paths
+        if (is_dir($basePath)) {
             $real = $basePath;
-            $mode = 'dir';
-            $candidates[] = $basePath . '/index.twig';
-            $candidates[] = $basePath . '/index.html';
+            $mode = 'dir'; // might be overwritten if we find one of the index files
+            foreach ($this->indexFiles as $file) {
+                $candidates[] = "$basePath/$file";
+            }
         }
         else {
-            $ext = pathinfo($basePath, PATHINFO_EXTENSION);
             $candidates[] = $basePath;
-            if ($ext !== 'twig') $candidates[] = $basePath . '.twig';
-            if ($ext !== 'md')   $candidates[] = $basePath . '.md';
-        }
-        foreach ($candidates as $c) {
-            if (is_file($c)) {
-                $match = $c;
-                break;
+            foreach($this->renderExt as $renderExt) {
+                if ($pathExt !== $renderExt) $candidates[] = "$basePath.$renderExt";
             }
         }
-        if ($match) {
-            $real = $match;
-            $rext = pathinfo($real, PATHINFO_EXTENSION);
+
+        // stop on first match and figure out some info about it
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate) === false) continue;
+            $real = $candidate;
+            $realExt = pathinfo($real, PATHINFO_EXTENSION);
             $mode = 'file';
-            if ($rext === 'twig') $mode = 'twig';
-            if ($rext === 'md')   $mode = 'md';
-            if (in_array($rext, ['twig', 'md']) && $rext === $ext) {
-                $mode = 'source';
+            if (in_array($realExt, $this->renderExt)) {
+                $mode = $realExt === $pathExt ? 'source' : $realExt;
             }
+            break;
         }
         return [
             'path' => $real,
             'mode' => $mode
         ];
+    }
+
+    /**
+     * Check if a file should be blocked, using user config
+     * @param string $ext
+     * @return bool
+     */
+    private function forbiddenType($ext) {
+        $forbidden = false;
+        $ext = strtolower($ext);
+        if (in_array($ext, $this->blockTypes)) {
+            $forbidden = true;
+        }
+        if (is_array($this->allowOnly) && !in_array($ext, $this->allowOnly)) {
+            $forbidden = true;
+        }
+        return $forbidden;
     }
 
     /**
@@ -229,17 +264,37 @@ class Controller
      */
     public function output()
     {
-        if ($this->renderMode === 'file') {
-            Utils::sendHeaders('200', 'application/octet-stream', $this->realFilePath);
+        $mode = $this->renderMode;
+        $realExt = pathinfo($this->realFilePath, PATHINFO_EXTENSION);
+        $textExt = ['md', 'mdown', 'markdown', 'txt'];
+
+        // Override mode for forbidden file types
+        if (!in_array($mode, ['dir', '404', '500']) &&  $this->forbiddenType($realExt)) {
+            $mode = '403';
+        }
+        // Or for some specific modes if browsing is disabled
+        if ($this->debugMode === false) {
+            // fall back to serving markdown/text as simple files (for complete URL only)
+            if ($mode === 'source') {
+                $mode = in_array($realExt, $textExt) ? 'file' : '404';
+            }
+            if ($mode === 'dir' || in_array($mode, $textExt)) {
+                $mode = '404';
+            }
+        }
+
+        // Now we're good to do the actual serving/rendering
+        if ($mode === '403' || $mode === '404' || $mode === '500') {
+            return $this->showError($mode);
+        }
+        if ($mode === 'file') {
+            Utils::sendHeaders('200', '', $this->realFilePath);
             return readfile($this->realFilePath);
         }
-        if ($this->renderMode === 'source') {
-            return $this->showSource($this->realFilePath);
+        if (in_array($mode, ['md', 'markdown'])) {
+            return $this->showText($this->realFilePath);
         }
-        if ($this->renderMode === 'md') {
-            return $this->showMarkdown($this->realFilePath);
-        }
-        if ($this->renderMode === 'twig') {
+        if ($mode === 'twig') {
             try {
                 $templateId = str_replace($this->docRoot.'/', '', $this->realFilePath);
                 $result = $this->twig()->renderUserTemplate($templateId);
@@ -250,10 +305,10 @@ class Controller
                 return $this->showTwigError($error);
             }
         }
-        if ($this->renderMode === '404') {
-            return $this->show404();
+        if ($mode === 'source') {
+            return $this->showSource($this->realFilePath);
         }
-        if ($this->renderMode === 'dir') {
+        if ($mode === 'dir') {
             return $this->showDir();
         }
         return '';
@@ -261,14 +316,19 @@ class Controller
 
     /**
      * Render an info or error page
-     * @param int $statusCode HTTP status code
+     * @param string $statusCode HTTP status code
      * @param array $data Variables for the error template
+     * @param bool $print Force printing the result instead of returning it
      * @return string
      */
-    private function showPage($statusCode=404, $data=[], $print=false)
+    private function showPage($statusCode='404', $data=[], $print=false)
     {
         Utils::sendHeaders($statusCode, 'text/html');
-        $html = $this->twig()->renderTwigExpressPage($data);
+        if ($this->debugMode === false) {
+            $html = $this->limitedErrorPage($statusCode);
+        } else {
+            $html = $this->twig()->renderTwigExpressPage($data);
+        }
         if ($print) {
             echo $html;
             exit;
@@ -286,7 +346,7 @@ class Controller
     {
         $source = file_get_contents($path);
         $lang = pathinfo($path, PATHINFO_EXTENSION);
-        return $this->showPage(200, [
+        return $this->showPage('200', [
             'code' => Utils::formatCodeBlock($source, $lang !== 'md'),
             'codeLang' => $lang,
             'navBorder' => false
@@ -294,34 +354,61 @@ class Controller
     }
 
     /**
-     * Show a rendered Markdown file
-     * @param $path
+     * Show a simple text file, optionally rendered through Markdown
+     * @param string $path
+     * @param bool $markdown
      * @return string
      */
-    private function showMarkdown($path)
+    private function showText($path, $markdown=true)
     {
         $source = file_get_contents($path);
-        return $this->showPage(200, [
-            'content' => Utils::processMarkdown($source)
+        $content = $markdown ? Utils::processMarkdown($source) : nl2br($source);
+        return $this->showPage('200', ['content' => $content]);
+    }
+
+    /**
+     * Prepare data for a 403/404/500 page
+     * @param string $code
+     * @return string
+     */
+    private function showError($code='404')
+    {
+        $title = 'File not found';
+        $verb = 'Could not find';
+        if ($code === '403') {
+            $title = 'Forbidden';
+            $verb = 'Access restricted';
+        }
+        if ($code === '500') {
+            $title = 'Error';
+            $verb = 'Could not display';
+        }
+        $path = $this->requestPath;
+        if ($path !== '/') $path = trim($path, '/');
+        $root = rtrim($this->docRoot, '/');
+        $msg  = "$verb: <code class=\"error\">$path</code><br>\n";
+        $msg .= "Document root: <code>$root</code>";
+        return $this->showPage($code, [
+            'title' => $title,
+            'message' => $msg
         ]);
     }
 
     /**
-     * Prepare a 404 page
+     * Error page template with a single message
+     * @param string $code
      * @return string
      */
-    private function show404()
-    {
-        $root = rtrim($this->docRoot, '/');
-        $path = rtrim($this->requestPath, '/');
-        if ($path && substr($path, -5) !== '.twig') $path .= '[.twig]';
-        $message = "Could not find: <code class=\"error\">$path</code><br>\n";
-        $message .= "Document root: <code>$root</code>";
-
-        return $this->showPage(404, [
-            'title' => 'File does not exist',
-            'message' => $message
-        ]);
+    private function limitedErrorPage($code='404') {
+        $path = $this->requestPath;
+        if ($path !== '/') $path = rtrim($path, '/');
+        $msg = $code === '500' ? 'Error' : 'File not found';
+        return "<title>$code - $path</title><style>"
+            . 'body{display:flex;height:100%;margin:0;align-items:center;color:#222;background:#eee}'
+            . 'p{width:100%;margin:0;padding:2em;text-align:center;font-family:sans-serif}'
+            . 'code{display:block;padding:.5em;font-family:monospace,monospace;font-size:120%;color:#A00}'
+            . "</style><body><p>$msg<br><code>$path</code></p></body>"
+            ;
     }
 
     /**
@@ -333,32 +420,32 @@ class Controller
         $root = $this->realFilePath;
         // Collapse multiple slashes (we could end up with '///', collapsed to '/')
         $base = Utils::getCleanPath($this->baseUrl . '/' . $this->requestPath . '/');
-        $nope = array_merge(
-            Utils::glob($this->excludeFiles, $root, 'file'),
-            Utils::glob($this->excludeDirs, $root, 'dir')
-        );
         $fileList = [];
         $dirList = [];
 
         foreach(Utils::glob('*', $root, 'file') as $name) {
-            if (!in_array($name, $nope)) {
-                $ext = pathinfo($name, PATHINFO_EXTENSION);
-                $noExt = pathinfo($name, PATHINFO_FILENAME);
-                $url = $base . (in_array($ext, ['twig', 'md']) ? $noExt : $name);
-                $fileList[] = ['name' => $name, 'url' => $url];
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            $url = $base . $name;
+            // skip dotfiles and blocked file types
+            if (substr($name, 0, 1) === '.' || in_array($ext, $this->blockTypes)) {
+                continue;
             }
+            if (in_array($ext, $this->renderExt)) {
+                $url = $base . pathinfo($name, PATHINFO_FILENAME);
+            }
+            $fileList[] = ['name' => $name, 'url' => $url];
         }
         foreach(Utils::glob('*', $root, 'dir') as $name) {
-            if (!in_array($name, $nope)) {
-                $dirList[] = ['name' => $name, 'url' => $base.$name];
-            }
+            // skip dotfiles
+            if (substr($name, 0, 1) === '.') continue;
+            $dirList[] = ['name' => $name, 'url' => $base.$name];
         }
 
         $message = '';
         if (count($dirList) + count($fileList) === 0) {
             $message = 'Empty directory';
         }
-        return $this->showPage(200, [
+        return $this->showPage('200', [
             'fileList' => $fileList,
             'dirList' => $dirList,
             'message' => $message,
@@ -392,32 +479,7 @@ class Controller
             $data['codeContext'] = Utils::getHighlightLanguage($template);
         }
 
-        return $this->showPage(500, $data);
-    }
-
-    /**
-     * Show a basic HTML page/message.
-     * Fallback for when internal page template fails.
-     */
-    public function showMinimalPage($data=[]) {
-        Utils::sendHeaders(500, 'text/html');
-        $TAG_MAP = [
-            'title' => 'h1',
-            'message' => 'blockquote',
-            'content' => 'div',
-            'code' => 'pre',
-            'error' => 'pre'
-        ];
-        $html = '';
-        foreach($TAG_MAP as $name => $tag) {
-            $content = array_key_exists($name, $data) ? $data[$name] : '';
-            if ($content) {
-                $html .= $tag === 'pre' ? '<pre style="white-space:pre-wrap">' : "<$tag>";
-                $html .= $content . "</$tag>\n";
-            }
-        }
-        echo $html;
-        exit;
+        return $this->showPage('500', $data);
     }
 
     /**
@@ -430,45 +492,69 @@ class Controller
         if (is_array($this->navInfo)) {
             return $this->navInfo;
         }
+        $path = trim($this->requestPath, '/');
+        if ($path === '') $path .= '/';
+
         // Return docroot folder name (or parent/folder, if short) as site name
-        $folder = basename($this->docRoot);
-        $parent = basename(dirname($this->docRoot));
-        $siteName = strlen($folder) < 5 ? "$parent/$folder" : $folder;
-        // Make breadcrumbs
-        $path = rtrim($this->requestPath, '/');
-        $_url_ = '/';
-        $crumbs = [['url' => $_url_, 'name' => $siteName]];
-        $folders = array_filter(explode('/', $path));
-        $last = array_pop($folders);
-        foreach ($folders as $folder) {
-            $_url_ .= $folder . '/';
-            $crumbs[] = ['url' => $_url_, 'name' => $folder];
+        $folder = pathinfo($this->docRoot, PATHINFO_BASENAME);
+        $pathBn = pathinfo($path, PATHINFO_BASENAME);
+        $pathFn = pathinfo($path, PATHINFO_FILENAME);
+        $real = pathinfo($this->realFilePath, PATHINFO_BASENAME);
+
+        // We should not use the breadcrumbs or its parent layout at all when
+        // debug mode is off, but let’s restrict info anyway
+        if ($this->debugMode === false) {
+            return [
+                'title' => $pathBn,
+                'crumbs' => []
+            ];
         }
-        // Set last known item as active
-        $_active_ = count($crumbs) - 1;
+
+        // Results, which we'll increment over time
+        $url = '/';
+        $crumbs = [
+            ['url' => $url, 'name' => basename($this->docRoot), 'ext' => false]
+        ];
+
+        $fragments = array_filter(explode('/', $path));
+        // showing an index file but the URL path has the directory name only?
+        if (in_array($real, $this->indexFiles) && $pathFn !== 'index') {
+            $last = $real;
+        }
+        // otherwise treat last path fragment as the actual last item
+        // (whether it's a folder or file)
+        else {
+            $last = array_pop($fragments);
+        }
+        foreach ($fragments as $f) {
+            $url .= $f . '/';
+            $crumbs[] = ['url' => $url, 'name' => $f, 'ext' => false];
+        }
+        $active = count($crumbs) - 1;
         // Add last item (sometimes as two separate items for filename/extension)
         if ($last) {
-            $real = pathinfo($this->realFilePath, PATHINFO_BASENAME);
-            $path_ext = pathinfo($last, PATHINFO_EXTENSION);
+            $path_ext = pathinfo($path, PATHINFO_EXTENSION);
             $real_ext = pathinfo($real, PATHINFO_EXTENSION);
-            // Static files, or 404
-            if (!$real || !in_array($real_ext, ['twig', 'md'])) {
-                $_active_ += 1;
-                $crumbs[] = ['url' => $_url_.$last, 'name' => $last];
+            // Static files, or 404/403
+            if ($real && in_array($real_ext, $this->renderExt)
+                && $this->forbiddenType($real_ext) === false
+            ) {
+                $active += $real_ext === $path_ext ? 2 : 1;
+                $real_noext = pathinfo($real, PATHINFO_FILENAME);
+                $crumbs[] = ['url' => $url.$real_noext, 'name' => $real_noext, 'ext' => false];
+                $crumbs[] = ['url' => $url.$real, 'name' => '.'.$real_ext, 'ext' => true];
             }
             else {
-                $real_noext = pathinfo($real, PATHINFO_FILENAME);
-                $crumbs[] = ['url' => $_url_.$real_noext, 'name' => $real_noext];
-                $crumbs[] = ['url' => $_url_.$real, 'name' => '.'.$real_ext];
-                $_active_ += $real_ext === $path_ext ? 2 : 1;
+                $active += 1;
+                $crumbs[] = ['url' => $url.$last, 'name' => $last, 'ext' => false];
             }
         }
         // Add 'active' attribute to items
         for ($i=0, $max=count($crumbs); $i < $max; $i++) {
-            $crumbs[$i]['active'] = $i === $_active_;
+            $crumbs[$i]['active'] = $i === $active;
         }
         return $this->navInfo = [
-            'title' => $siteName,
+            'title' => ($pathBn ? $pathBn . ' - ' : '') . $folder,
             'crumbs' => $crumbs
         ];
     }
@@ -488,7 +574,7 @@ class Controller
             'highlightjs' => 'js/highlight.min.js'
         ];
         $content = [];
-        $root = dirname(__DIR__) . '/tpl/';
+        $root = __DIR__ . '/tpl/';
         foreach ($assets as $name => $path) {
             $content[$name] = file_get_contents($root . $path);
         }

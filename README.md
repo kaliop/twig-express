@@ -97,10 +97,10 @@ You can add global variables that will be available in every template rendered b
 
 ```json
 {
-    "globals": {
-        "FACEBOOK_APP_ID": "542F159A0213",
-        "someDefaultValue": false
-    }
+  "globals": {
+    "FACEBOOK_APP_ID": "542F159A0213",
+    "someDefaultValue": false
+  }
 }
 ```
 
@@ -110,9 +110,9 @@ Then in every template you will be able to use those variables, e.g. like this:
 Our Facebook App ID is: {{ 542F159A0213 }}
 
 {% if someDefaultValue %}
-    The "someDefaultValue" variable is true.
+  The "someDefaultValue" variable is true.
 {% else %}
-    The "someDefaultValue" variable is false.
+  The "someDefaultValue" variable is false.
 {% endif %}
 ```
 

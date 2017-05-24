@@ -56,10 +56,7 @@ You can generate fake latin text with the `lorem()` function.
 {{ lorem('1-5w') }}
 {{ lorem('5-10 sentences') }}
 
-{# Wrap the paragraphs in <p> tags #}
-{{ lorem('1-5p', 'p') | raw }}
-
-{# Wrap the command in brackets, get an array of strings. #}
+{# Wrap the command in brackets to get an array of strings. #}
 <ul>
 {% for item in lorem('[7 sentences]') %}
   <li>{{ item }}</li>
