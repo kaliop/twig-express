@@ -1,0 +1,57 @@
+{% extends 'test/_layout.twig' %}
+
+{% block content %}
+  <h1>Twig function: <code>param</code></h1>
+
+  <h2 id="get-demo">Default: GET values</h2>
+
+  <p><a href="?get1=Hello&amp;get2=Goodbye#get-demo">Click to populate GET variables</a></p>
+
+  <h3><code>param('get1')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('get1')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('get:get1')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('get:get1')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('other:get1')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('other:get1')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('get2', 'Fallback value')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('get2', 'Fallback value')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('get3', param('get1'))</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('get3', param('get1'))) }}</pre>
+  </blockquote>
+
+  <h2 id="post-demo">POST values</h2>
+
+  <form action="?#post-demo" method="post">
+    <input type="hidden" name="post1" value="How Do">
+    <input type="hidden" name="post2" value="You Do">
+    <button>Click to populate POST variables</button>
+  </form>
+
+  <h3><code>param('post:post1')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('post:post1')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('POST:post2', 'Fallback value')</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('POST:post2', 'Fallback value')) }}</pre>
+  </blockquote>
+
+  <h3><code>param('post:post3', param('POST:post1'))</code></h3>
+  <blockquote>
+    <pre>{{ dump(param('post:post3', param('POST:post1'))) }}</pre>
+  </blockquote>
+{% endblock %}

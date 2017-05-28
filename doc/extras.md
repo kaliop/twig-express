@@ -3,37 +3,41 @@ TwigExpress-specific features
 
 To help with basic HTML prototyping, we included a few special variables and functions. Be careful when using these features if your code will be ported later to another Twig environment (Symfony, Laravel, Drupal 8, WordPress with [Timber](http://upstatement.com/timber/), etc.) which doesn’t have these extra features!
 
-- [# URLs to assets](#urls-to-assets)
-- [# GET and POST values](#get-and-post-values)
-- [# `lorem` - Dummy text](#lorem-dummy-text)
-- [# `markdown` - Markdown to HTML](#markdown-markdown-to-html)
-- [# Listing `files` and `folders`](#listing-files-and-folders)
+- [`param` - HTTP values](#param-http-values)
+- [`lorem` - Dummy text](#lorem-dummy-text)
+- [`markdown` - Markdown to HTML](#markdown-markdown-to-html)
+- [Listing `files` and `folders`](#listing-files-and-folders)
+- [Using the TwigExpress page style](#using-the-twigexpress-page-style)
 
 
-URLs to assets
---------------
+`param` - HTTP values
+---------------------
 
-The `_base` variable represents the base URL of your TwigExpress install. It should be just `/` most of the time, or it will be `/foldername/` if you have installed TwigExpress in a subfolder with Apache and are accessing it at `http://localhost/foldername/`.
+You can retrieve GET, POST and cookie values using the `param()` function.
 
-We recommend using the `_base` variable whenever you’re referencing assets or making URLs between pages:
+This can be useful for prototyping, for instance if you want to be able to show a page with the navigation bar shown or hidden, you could add `?shownav=1` in its URL, and use the following Twig code:
 
 ```twig
-<link rel="stylesheet" href="{{ _base }}assets/css/styles.css">
-<img src="{{ _base }}images/home_banner.jpg" alt="">
-<a href="{{ _base }}pages/home">Home template</a>
+<nav{% if not param('shownav') %} hidden{%endif%}>
 ```
 
-This makes your code more portable if you want to share it with others (for example if they install it in a subfolder and you don’t).
+By default the `param()` function will look in GET parameters (PHP’s `$_GET` array), and if it can’t find the requested value it will return an empty string. You can provide a different fallback value as a second parameter:
 
+```twig
+{{ param('something', 'My default value') }}
+```
 
-GET and POST values
--------------------
+To get a POST value or a cookie value instead, use a `post:` or `cookie:` prefix in the parameter’s name:
 
-You can use these variables to access GET and POST parameters, as well as cookie data:
+```twig
+{# The 'get:' prefix is implied #}
+{{ param('something') }}
+{{ param('get:something') }}
 
-- `_get`: an array of GET parameters.
-- `_post`: an array of POST parameters.
-- `_cookie`: an array of current cookies.
+{# The prefix is case-insensitive, but not the actual key #}
+{{ param('post:something') }}
+{{ param('POST:something') }}
+```
 
 
 `lorem` - Dummy text
@@ -105,3 +109,23 @@ The `files` and `folders` functions let you list the content of a given director
 ```
 
 The two functions work exactly the same, but `files` matches files and `folders` matches… you know. Both functions accept either a string or an array of strings (glob patterns).
+
+
+Using the TwigExpress page style
+--------------------------------
+
+You can make use of the same HTML page layout and styling as the TwigExpress pages, by extending a template returned by the `twigexpress_layout` function. This might look like:
+
+```twig
+{% extends twigexpress_layout() %}
+
+{% block content %}
+  <h1>My Awesome Page</h1>
+  <p>Hello there.</p>
+{% endblock %}
+
+{% block styles %}
+  {{ parent() }}
+  <style>/* Adding custom styles */</style>
+{% endblock %}
+```

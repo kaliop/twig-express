@@ -34,8 +34,8 @@
   <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
   {% if metaTitle ?? false %}<title>{{ metaTitle }}</title>{% endif -%}
-  {% block styles %}
   <style>.icon{width:1em;height:1em;}</style>
+  {% block styles %}
   <style>{{ assets.css | raw }}</style>
   {% endblock %}
 </head>
@@ -104,6 +104,9 @@
     ;hljs.initHighlighting();
   </script>
 {% endif %}
+  <script>
+    {{- assets.headingids | raw -}}
+  </script>
 {% endblock %}
 
 </body>

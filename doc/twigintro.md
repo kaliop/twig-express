@@ -1,11 +1,11 @@
-# Getting Started with Twig
+Getting Started with Twig
+=========================
+
 
 Let’s learn some Twig!
 
-In addition to this introduction, you should probably:
+In addition to this introduction, you should keep the [Twig documentation][TWIG_DOC] around to check what the available Twig tags, filters and functions are.
 
-1. Read [Twig for Template Designers][TWIG_INTRO] (maybe open it in a new tab and come back to it later).
-2. Keep the [Twig documentation][TWIG_DOC] around to check what the available Twig tags, filters and functions are.
 
 Using variables
 ---------------
@@ -46,6 +46,7 @@ Finally, sometimes a variable may or may not be defined. To avoid getting an err
   {{ i }}<br>
 {% endfor %}
 ```
+
 
 Including stuff
 ---------------
@@ -100,6 +101,7 @@ You can also include the content of a file without rendering it as a Twig templa
 </script>
 ```
 
+
 Extending a parent template
 ---------------------------
 
@@ -109,5 +111,4 @@ That’s it, you know everything you need to get started with Twig!
 
 
 [TWIG_DOC]: http://twig.sensiolabs.org/documentation
-[TWIG_INTRO]: http://twig.sensiolabs.org/doc/templates.html
 [TWIG_INHERITANCE]: http://twig.sensiolabs.org/doc/templates.html#template-inheritance

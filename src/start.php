@@ -21,6 +21,6 @@ require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/Utils.php';
 require_once __DIR__ . '/TwigEnv.php';
 
-$controller = new Gradientz\TwigExpress\Controller();
+$controller = new TwigExpress\Controller();
 $text = $controller->output();
 if (is_string($text)) echo $text;

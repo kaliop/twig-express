@@ -237,7 +237,8 @@ main:empty {
 }
 
 .Content h2 {
-  padding-bottom: .75rem;
+  margin-top: 1.25em;
+  padding: .75rem 0;
   border-bottom: solid 1px;
   border-color: var(--lighter-gray);
 }

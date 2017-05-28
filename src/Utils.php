@@ -1,6 +1,6 @@
 <?php
 
-namespace Gradientz\TwigExpress;
+namespace TwigExpress;
 
 use Karwana\Mime\Mime;
 use joshtronic\LoremIpsum;
@@ -68,6 +68,33 @@ class Utils
         }
         header("HTTP/1.1 $code $statuses[$code]");
         header($typeHeader);
+    }
+
+    /**
+     * Retrieve a value from $_GET or $_POST, using a fallback value if
+     * the queried key doesn't exist. Allows defining the method ('get',
+     * 'post' or 'cookie') as a prefix in the name, e.g. 'post:somevar'.
+     * @param string $name
+     * @param string [$fallback]
+     * @return mixed
+     */
+    static function getHttpParameter($name='', $fallback='')
+    {
+        $bag = $_GET;
+        $key = (string) $name;
+        $start = strtolower(explode(':', $key)[0]);
+        if ($start === 'get') {
+            $key = substr($key, 4);
+        }
+        if ($start === 'post') {
+            $key = substr($key, 5);
+            $bag = $_POST;
+        }
+        if ($start === 'cookie') {
+            $key = substr($key, 7);
+            $bag = $_COOKIE;
+        }
+        return array_key_exists($key, $bag) ? $bag[$key] : $fallback;
     }
 
     /**

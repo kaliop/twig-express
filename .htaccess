@@ -5,20 +5,12 @@ Options -Indexes -Multiviews
 ## Treat .phar as PHP
 AddHandler application/x-httpd-php .phar
 
-## Charset in TwigExpress is UTF-8 (not configurable)
-AddDefaultCharset UTF-8
-
-## Send requests to twigexpress.phar
 <IfModule mod_rewrite.c>
-    RewriteEngine on
-
-    ## Some Apache configs require a RewriteBase to work
-    ## correctly. Uncomment and set the RewriteBase to either
-    ## "/" (if your files are at the root of the domain) or
-    ## "/mysubfolder/" (if your files are in a subfolder).
-    #RewriteBase /
-
-    RewriteCond %{REQUEST_FILENAME} \.twig$ [OR]
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule (.*) twigexpress.phar/start.php [L]
+  RewriteEngine on
+  ## Some Apache configs may require a RewriteBase to work correctly
+  #RewriteBase /
+  ## /!\ Serve all requests with TwigExpress /!\
+  RewriteCond %{REQUEST_FILENAME} \.twig$ [OR]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule (.*) twigexpress.phar/start.php [L]
 </IfModule>

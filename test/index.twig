@@ -12,7 +12,7 @@
       <th>Twig source</th>
     </tr>
   {% for path in files('test/*.twig') %}
-    {%- set url = _base ~ path|replace({'.twig':''}) %}
+    {%- set url = '/' ~ path|replace({'.twig':''}) %}
     {%- set name = url|split('/')|last %}
     {% if name not in ['index', '_layout'] %}
     <tr>

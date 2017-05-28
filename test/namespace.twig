@@ -1,10 +1,10 @@
 {% extends 'test/_layout.twig' %}
 
 {% block content %}
-  <p>This page will show its own source code, as long as the <code>@testnamespace</code> namespace is understood:</p>
+  <p>This page will show its own source code, as long as the <code>@test_namespace</code> namespace is understood:</p>
   <blockquote>
     <pre>
-      {{- source('@testnamespace/namespace.twig')|e -}}
+      {{- source('@test_namespace/namespace.twig')|e -}}
     </pre>
   </blockquote>
 {% endblock %}

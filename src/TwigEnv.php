@@ -1,6 +1,6 @@
 <?php
 
-namespace Gradientz\TwigExpress;
+namespace TwigExpress;
 
 use Twig_Autoloader;
 use Twig_Environment;
@@ -36,7 +36,7 @@ class TwigEnv
     /**
      * TwigEnv constructor
      * @param Controller $controller
-     * @param array $globals
+     * @param [array] $globals
      */
     public function __construct($controller, $globals=[])
     {
@@ -51,14 +51,17 @@ class TwigEnv
         $config = $this->defaults;
 
         if (is_array($userConfig)) {
-            foreach($config as $key=>$val) {
-                if (array_key_exists($key, $userConfig)) {
-                    $config[$key] = $userConfig[$key];
+            if (array_key_exists('twig_options', $userConfig)
+                && is_array($userConfig['twig_options'])) {
+                foreach ($config as $key => $val) {
+                    if (array_key_exists($key, $userConfig['twig_options'])) {
+                        $config[$key] = $userConfig['twig_options'][$key];
+                    }
                 }
             }
-            if (array_key_exists('globals', $userConfig)
-                && is_array($userConfig['globals'])) {
-                $globals = array_merge($globals, $userConfig['globals']);
+            if (array_key_exists('global_vars', $userConfig)
+                && is_array($userConfig['global_vars'])) {
+                $globals = array_merge($globals, $userConfig['global_vars']);
             }
         }
 
@@ -136,6 +139,14 @@ class TwigEnv
 
         // Likewise for getting the <title> and breadcrumbs
         $env->addFunction(new Twig_SimpleFunction('twigexpress_layout_navinfo', [$this->controller, 'getNavInfo']));
+
+        // Helpers to retrieve GET and POST values
+        // Usage:
+        //   {{ param('foo', 'Fallback value') }}
+        //   {{ param('post:foo', 'Fallback value') }}
+        $env->addFunction(new Twig_SimpleFunction('param', function($name='', $fallback='') {
+            return Utils::getHttpParameter($name, $fallback);
+        }));
 
         // Twig function for generating fake latin text
         // Usage:

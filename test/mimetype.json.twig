@@ -1,8 +1,6 @@
-{% set data = {
-  test: 'JSON "Mime Type" should be',
-  expected: 'Content-Type:application/json;charset=utf-8'
-} %}
-{
-  "test": {{ data.test|json_encode|raw }},
-  "expected": {{ data.expected|json_encode|raw }}
-}
+{% set json = {
+    test: 'JSON "Mime Type" should be',
+    expected: 'Content-Type:application/json;charset=utf-8'
+  }|json_encode
+%}
+{{ json|raw }}

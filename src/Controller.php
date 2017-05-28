@@ -1,38 +1,29 @@
 <?php
 
-namespace Gradientz\TwigExpress;
+namespace TwigExpress;
 
 class Controller
 {
     /** @var array - User configuration */
     public $config;
 
-    /** @var array - Valid Twig namespaces (from user configuration) */
-    public $namespaces = [];
+    /** @var array - Whitelist of allowed filename patterns (user config) */
+    public $allowOnly;
 
     /** @var bool - Allow directory browsing, showing Twig/Markdown sources, etc. */
     public $debugMode = true;
 
-    /** @var array - Whitelist of allowed extensions (user config) */
-    public $allowOnly;
+    /** @var array - Valid Twig namespaces (from user configuration) */
+    public $namespaces = [];
 
     /** @var string - Full path of project/server root */
     public $docRoot;
 
-    /** @var string - URL prefix if project root is below an Apache DocumentRoot */
-    private $baseUrl;
-
     /** @var string - Requested path (from root dir) */
-    private $requestPath;
+    private $reqPath;
 
     /** @var string - Full path of the file we found to serve this request */
-    private $realFilePath;
-
-    /** @var array */
-    private $navInfo;
-
-    /** @var array */
-    private $layoutAssets;
+    private $realPath;
 
     /** @var string - Type of rendering, one of 'file', 'twig', 'dir' or '404' */
     private $renderMode;
@@ -42,10 +33,12 @@ class Controller
 
     /**
      * @var array - Blacklist of extensions to avoid serving
-     * Not configurable, not a real security measure, don't put TwigExpress
+     * Not configurable, not a solid security measure, don't put TwigExpress
      * on a live server EVER thank you very much.
      */
-    private $blockTypes = ['php', 'phar', 'htaccess', 'htpasswd', 'sql'];
+    private $blockTypes = [
+        'twigexpress.*', '*.php', '*.phar', '.htaccess', '.htpasswd', '*.sql'
+    ];
 
     /** @var array - Filenames for directory indexes (order sets priority) */
     private $indexFiles = ['index.html', 'index.twig'];
@@ -54,7 +47,13 @@ class Controller
     private $renderExt = ['twig', 'md', 'markdown'];
 
     /** @var null|TwigEnv - Our custom twig environment wrapper */
-    private $twigEnv = null;
+    private $twigEnv;
+
+    /** @var array - cache for navigation/breadcrumbs info */
+    private $navInfo;
+
+    /** @var array - cache for the TwigExpress page's assets */
+    private $layoutAssets;
 
     /**
      * Resolve the document root, request path and base URL
@@ -62,37 +61,10 @@ class Controller
     public function __construct()
     {
         // Figure out the root dir
-        $docRoot = Utils::getCleanPath($_SERVER['DOCUMENT_ROOT']);
-        $scriptName = Utils::getCleanPath($_SERVER['SCRIPT_FILENAME']);
-        $scriptRoot = preg_replace('/\/twigexpress(\.phar|\/start\.php)$/', '', $scriptName);
-        $requestPath = explode('?', Utils::getCleanPath($_SERVER['REQUEST_URI']))[0];
-
-        // Simpler case: we trust the document root we have
-        $this->docRoot = $docRoot;
-        $this->requestPath = $requestPath;
-        $this->baseUrl = '/';
-
-        // If we have a conventional folder structure for Apache, with a .htaccess
-        // and a twigexpress.phar at the root of the folder, try to guess if we’re
-        // in a subfolder, and correct the root dir, request path and base URL.
-        if (php_sapi_name() !== 'cli-server' && $scriptRoot !== $docRoot && file_exists($scriptRoot . '/.htaccess')) {
-            $trimmed = $requestPath;
-            $baseUrl = '/';
-            $parts = array_filter(explode('/', $scriptRoot));
-            // For a script root of '/a/b/c', try to remove '/c' at the start of the
-            // request URI, then '/b/c', then '/a/b/c'. Latest match wins.
-            for ($i=count($parts); $i > 0; $i--) {
-                $pattern = '/' . implode('/', array_slice($parts, $i-1));
-                $result = preg_replace('#^'. preg_quote($pattern) .'#', '', $requestPath);
-                if ($result !== $requestPath) {
-                    $trimmed = $result;
-                    $baseUrl = $pattern . '/';
-                }
-            }
-            $this->docRoot = $scriptRoot;
-            $this->requestPath = $trimmed;
-            $this->baseUrl = $baseUrl;
-        }
+        $this->docRoot = Utils::getCleanPath($_SERVER['DOCUMENT_ROOT']);
+        $this->reqPath = explode('?', Utils::getCleanPath(
+            rawurldecode($_SERVER['REQUEST_URI'])
+        ))[0];
 
         // Prepare user config
         $this->config = $this->getUserConfig();
@@ -109,8 +81,8 @@ class Controller
         }
 
         // Can we find the requested file?
-        $finfo = $this->findRequestedFile($this->requestPath);
-        $this->realFilePath = $finfo['path'];
+        $finfo = $this->findRequestedFile($this->reqPath);
+        $this->realPath = $finfo['path'];
         $this->renderMode = $finfo['mode'];
     }
 
@@ -221,19 +193,19 @@ class Controller
 
     /**
      * Check if a file should be blocked, using user config
-     * @param string $ext
+     * @param string $filename - filename (or file path)
      * @return bool
      */
-    private function forbiddenType($ext) {
-        $forbidden = false;
-        $ext = strtolower($ext);
-        if (in_array($ext, $this->blockTypes)) {
-            $forbidden = true;
+    private function allowFile($filename) {
+        $name = pathinfo(strtolower($filename), PATHINFO_BASENAME);
+        foreach($this->blockTypes as $pattern) {
+            if (fnmatch($pattern, $name)) return false;
         }
-        if (is_array($this->allowOnly) && !in_array($ext, $this->allowOnly)) {
-            $forbidden = true;
-        }
-        return $forbidden;
+        if (!is_array($this->allowOnly)) return true;
+        $matches = array_filter($this->allowOnly, function($p) use ($name) {
+            return is_string($p) && trim($p) !== '' && fnmatch($p, $name);
+        });
+        return count($matches) > 0;
     }
 
     /**
@@ -246,13 +218,7 @@ class Controller
             return $this->twigEnv;
         } else {
             return $this->twigEnv = new TwigEnv(
-                $this,
-                [
-                    '_get' => $_GET,
-                    '_post' => $_POST,
-                    '_cookie' => $_COOKIE,
-                    '_base' => $this->baseUrl
-                ]
+                $this
             );
         }
     }
@@ -265,11 +231,12 @@ class Controller
     public function output()
     {
         $mode = $this->renderMode;
-        $realExt = pathinfo($this->realFilePath, PATHINFO_EXTENSION);
+        $realName = pathinfo($this->realPath, PATHINFO_BASENAME);
+        $realExt = pathinfo($this->realPath, PATHINFO_EXTENSION);
         $textExt = ['md', 'mdown', 'markdown', 'txt'];
 
         // Override mode for forbidden file types
-        if (!in_array($mode, ['dir', '404', '500']) &&  $this->forbiddenType($realExt)) {
+        if (!in_array($mode, ['dir', '404', '500']) && $this->allowFile($realName) === false) {
             $mode = '403';
         }
         // Or for some specific modes if browsing is disabled
@@ -288,17 +255,17 @@ class Controller
             return $this->showError($mode);
         }
         if ($mode === 'file') {
-            Utils::sendHeaders('200', '', $this->realFilePath);
-            return readfile($this->realFilePath);
+            Utils::sendHeaders('200', '', $this->realPath);
+            return readfile($this->realPath);
         }
         if (in_array($mode, ['md', 'markdown'])) {
-            return $this->showText($this->realFilePath);
+            return $this->showText($this->realPath);
         }
         if ($mode === 'twig') {
             try {
-                $templateId = str_replace($this->docRoot.'/', '', $this->realFilePath);
+                $templateId = str_replace($this->docRoot.'/', '', $this->realPath);
                 $result = $this->twig()->renderUserTemplate($templateId);
-                Utils::sendHeaders('200', 'text/html', $this->realFilePath);
+                Utils::sendHeaders('200', 'text/html', $this->realPath);
                 return $result;
             }
             catch (\Twig_Error $error) {
@@ -306,7 +273,7 @@ class Controller
             }
         }
         if ($mode === 'source') {
-            return $this->showSource($this->realFilePath);
+            return $this->showSource($this->realPath);
         }
         if ($mode === 'dir') {
             return $this->showDir();
@@ -383,7 +350,7 @@ class Controller
             $title = 'Error';
             $verb = 'Could not display';
         }
-        $path = $this->requestPath;
+        $path = $this->reqPath;
         if ($path !== '/') $path = trim($path, '/');
         $root = rtrim($this->docRoot, '/');
         $msg  = "$verb: <code class=\"error\">$path</code><br>\n";
@@ -400,7 +367,7 @@ class Controller
      * @return string
      */
     private function limitedErrorPage($code='404') {
-        $path = $this->requestPath;
+        $path = $this->reqPath;
         if ($path !== '/') $path = rtrim($path, '/');
         $msg = $code === '500' ? 'Error' : 'File not found';
         return "<title>$code - $path</title><style>"
@@ -417,9 +384,9 @@ class Controller
      */
     private function showDir()
     {
-        $root = $this->realFilePath;
+        $root = $this->realPath;
         // Collapse multiple slashes (we could end up with '///', collapsed to '/')
-        $base = Utils::getCleanPath($this->baseUrl . '/' . $this->requestPath . '/');
+        $base = Utils::getCleanPath('/' . $this->reqPath . '/');
         $fileList = [];
         $dirList = [];
 
@@ -427,7 +394,7 @@ class Controller
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             $url = $base . $name;
             // skip dotfiles and blocked file types
-            if (substr($name, 0, 1) === '.' || in_array($ext, $this->blockTypes)) {
+            if (substr($name, 0, 1) === '.' || $this->allowFile($name) === false) {
                 continue;
             }
             if (in_array($ext, $this->renderExt)) {
@@ -492,14 +459,14 @@ class Controller
         if (is_array($this->navInfo)) {
             return $this->navInfo;
         }
-        $path = trim($this->requestPath, '/');
+        $path = trim($this->reqPath, '/');
         if ($path === '') $path .= '/';
 
         // Return docroot folder name (or parent/folder, if short) as site name
         $folder = pathinfo($this->docRoot, PATHINFO_BASENAME);
         $pathBn = pathinfo($path, PATHINFO_BASENAME);
         $pathFn = pathinfo($path, PATHINFO_FILENAME);
-        $real = pathinfo($this->realFilePath, PATHINFO_BASENAME);
+        $real = pathinfo($this->realPath, PATHINFO_BASENAME);
 
         // We should not use the breadcrumbs or its parent layout at all when
         // debug mode is off, but let’s restrict info anyway
@@ -536,9 +503,7 @@ class Controller
             $path_ext = pathinfo($path, PATHINFO_EXTENSION);
             $real_ext = pathinfo($real, PATHINFO_EXTENSION);
             // Static files, or 404/403
-            if ($real && in_array($real_ext, $this->renderExt)
-                && $this->forbiddenType($real_ext) === false
-            ) {
+            if ($real && in_array($real_ext, $this->renderExt) && $this->allowFile($real)) {
                 $active += $real_ext === $path_ext ? 2 : 1;
                 $real_noext = pathinfo($real, PATHINFO_FILENAME);
                 $crumbs[] = ['url' => $url.$real_noext, 'name' => $real_noext, 'ext' => false];
@@ -571,7 +536,8 @@ class Controller
         $assets = [
             'css' => 'css/styles.css',
             'svg' => 'svg/sprite.svg',
-            'highlightjs' => 'js/highlight.min.js'
+            'highlightjs' => 'js/highlight.min.js',
+            'headingids' => 'js/headingids.js'
         ];
         $content = [];
         $root = __DIR__ . '/tpl/';

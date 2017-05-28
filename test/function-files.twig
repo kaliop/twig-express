@@ -1,19 +1,17 @@
 {% extends 'test/_layout.twig' %}
 
 {% block content %}
+  <h1>Twig functions: <code>files</code> and <code>folders</code></h1>
 
-<h1>Twig functions: <code>files</code> and <code>folders</code></h1>
+  <h2><code>dump( folders(['*', '*/*', '*/*/*']) )</code></h2>
+  <p>List all folders, three levels deep. (Note that PHP’s <code>glob</code> function doesn’t have the <code>**/*</code> syntax for recursive search.)</p>
+  <blockquote>
+  <pre>{{ dump(folders(['*', '*/*', '*/*/*'])) }}</pre>
+  </blockquote>
 
-<h2><code>dump( folders(['*', '*/*', '*/*/*']) )</code></h2>
-<p>List all folders, three levels deep. (Note that PHP’s <code>glob</code> function doesn’t have the <code>**/*</code> syntax for recursive search.)</p>
-<blockquote>
-<pre>{{ dump(folders(['*', '*/*', '*/*/*'])) }}</pre>
-</blockquote>
-
-<h2><code>dump( files('test/*.twig') )</code></h2>
-<p>All Twig files in the <code>test</code> folder.</p>
-<blockquote>
-<pre>{{ dump(files('test/*.twig')) }}</pre>
-</blockquote>
-
+  <h2><code>dump( files('test/*.twig') )</code></h2>
+  <p>All Twig files in the <code>test</code> folder.</p>
+  <blockquote>
+  <pre>{{ dump(files('test/*.twig')) }}</pre>
+  </blockquote>
 {% endblock %}
