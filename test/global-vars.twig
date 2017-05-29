@@ -1,15 +1,15 @@
-{% extends 'test/_layout.twig' %}
+{% extends twigexpress_layout() %}
 
 {% block content %}
   <h1>Config option: <code>global_vars</code></h1>
 
   <h3><code>some_number * 100</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
     {{ some_number * 100 }}
   </blockquote>
 
   <h3><code>_context['with spaces']</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
     {{ _context['with spaces'] }}
   </blockquote>
 {% endblock %}

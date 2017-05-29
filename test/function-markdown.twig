@@ -1,25 +1,25 @@
-{% extends 'test/_layout.twig' %}
+{% extends twigexpress_layout() %}
 
 {% block content %}
   <h1>Twig function: <code>markdown</code></h1>
 
   <h2><code>markdown('Hello *world*!')</code></h2>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ markdown('Hello *world*!') }}
   </blockquote>
 
   <h2><code>markdown('Hello *world*!', inline=true)</code></h2>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ markdown('Hello *world*!', inline=true) }}
   </blockquote>
 
   <h2><code>markdown('Hello *world*!') | raw</code></h2>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ markdown('Hello *world*!') | raw }}
   </blockquote>
 
   <h2><code>markdown(source('README.md')) | raw</code></h2>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ markdown(source('README.md')) | raw }}
   </blockquote>
 {% endblock %}

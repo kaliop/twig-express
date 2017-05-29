@@ -12,7 +12,7 @@ hljs.registerLanguage('twig', function (hljs) {
     begin: '\\(', end: '\\)'
   };
 
-  var CUSTOM_FUNCTIONS = 'lorem markdown files folders';
+  var CUSTOM_FUNCTIONS = 'param lorem markdown files folders';
   var FUNCTION_NAMES = CUSTOM_FUNCTIONS + ' attribute block constant ' +
     'cycle date dump include max min parent random range source ' +
     'template_from_string';

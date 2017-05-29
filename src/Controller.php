@@ -554,7 +554,7 @@ class Controller
             'css' => 'css/styles.css',
             'svg' => 'svg/sprite.svg',
             'highlightjs' => 'js/highlight.min.js',
-            'headingids' => 'js/headingids.js'
+            'headings' => 'js/headings.js'
         ];
         $content = [];
         $root = __DIR__ . '/tpl/';

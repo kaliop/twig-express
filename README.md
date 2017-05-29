@@ -2,38 +2,29 @@ TwigExpress
 ===========
 
 
-*[Download][DOWNLOAD]. Unzip. Write [Twig templates](doc/intro.md) see the result.*
-
 TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
 
-*⚠ Do not use TwigExpress in production ⚠*
+Main features:
 
-We recommend using TwigExpress for:
+-   Browse and serve files
+-   Render Twig templates
+-   Error pages with code excerpt, source view
+-   And a few extra tools for prototyping (dummy text, Markdown to HTML…):
+
+**⚠ Do not use in production ⚠** We recommend using TwigExpress for:
 
 1.  discovering (or play with) Twig;
 2.  building HTML prototypes with Twig, CSS and JS.
 
+
+
 *Table of contents*
 
-1. [Summary of features](#summary-of-features)
 2. [Installation](#installation)
 3. [Adding content](#adding-content)
 4. [Writing Twig templates](#writing-twig-templates)
 5. [Configuration](#configuration)
 6. [Library and license info](#library-and-license-info)
-
-
-Summary of features
--------------------
-
--   Browse and serve files
--   Render Twig templates
--   Error pages with code excerpt
--   Source view with syntax highlighting
--   And a few extra tools for prototyping:
-    -   generate faux text (“lorem ipsum”)
-    -   convert Markdown text to HTML
-    -   list files and folders…
 
 
 Installation

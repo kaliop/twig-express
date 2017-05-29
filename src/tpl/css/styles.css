@@ -249,6 +249,43 @@ main:empty {
   }
 }
 
+.Content table {
+  margin: 1.5em 0;
+  border-collapse: collapse;
+}
+
+.Content th,
+.Content td {
+  text-align: left;
+  padding: .5em 1em;
+  border: solid 1px #f0f0f0;
+}
+
+/* Result in test pages */
+
+.TestResult {
+  margin: 1em 0;
+  padding: 1em;
+  border: solid 1px #aaa;
+  font-size: 85%;
+  background: #f4f4f4;
+}
+
+/* Links in columns */
+
+.Content .LinkTable {
+  width: 100%;
+  margin: 3em 0;
+}
+.Content .LinkTable td {
+  padding: 0;
+}
+.Content .LinkTable a {
+  display: block;
+  padding: .5em 1em;
+  text-decoration: none;
+}
+
 /* List of files or folders */
 
 .Links {

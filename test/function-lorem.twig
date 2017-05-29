@@ -1,4 +1,4 @@
-{% extends 'test/_layout.twig' %}
+{% extends twigexpress_layout() %}
 
 {% block content %}
   <h1>Twig function: <code>lorem</code></h1>
@@ -7,29 +7,29 @@
 
   <h3><code>lorem()</code></h3>
   <p>Default output: one to seven words.</p>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ lorem() }}
   </blockquote>
 
   <h3><code>lorem('15 words')</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ lorem('15 words') }}
   </blockquote>
 
   <h3><code>lorem('1-5 sentences')</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ lorem('1-5 sentences') }}
   </blockquote>
 
   <h3><code>lorem('2p')</code></h3>
   <p>Paragraphs can be a bit long.</p>
-  <blockquote>
+  <blockquote class="TestResult">
   {{ lorem('2p') }}
   </blockquote>
 
   <h3><code>{% verbatim %}{% for i in 1..random(2)+3 %} &lt;p>{{ lorem('1-3s') }}&lt;/p> {% endfor %}{% endverbatim %}</code></h3>
   <p>So sometimes generating sentences is better?</p>
-  <blockquote>
+  <blockquote class="TestResult">
   {% for i in 1..random(2)+3 %}
     <p>{{ lorem('1-3s') }}</p>
   {% endfor %}
@@ -38,12 +38,12 @@
   <h2>Wrap the command in brackets to get and array</h2>
 
   <h3><code>lorem('[9w]')|join(', ')</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
     {{ lorem('[5-9w]')|join(', ') }}
   </blockquote>
 
   <h3><code>{% verbatim %}{% for x in lorem('[5s]') %} &lt;li>{{ x }}&lt&lt;/li> {% endfor %}{% endverbatim %}</code></h3>
-  <blockquote>
+  <blockquote class="TestResult">
   <ul>
   {% for x in lorem('[5s]') %}
     <li>{{ x }}</li>
