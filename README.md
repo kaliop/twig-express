@@ -6,6 +6,13 @@ TwigExpress
 
 TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
 
+*⚠ Do not use TwigExpress in production ⚠*
+
+We recommend using TwigExpress for:
+
+1.  discovering (or play with) Twig;
+2.  building HTML prototypes with Twig, CSS and JS.
+
 *Table of contents*
 
 1. [Summary of features](#summary-of-features)
@@ -45,13 +52,6 @@ Installation
     `php --server localhost:8000 twigexpress.phar`.
 3.  Load `http://localhost:8000/` in a web browser to browse files.<br>
     Any file ending in `.twig` will be interpreted as a Twig template.
-
-### ⚠ Do not use TwigExpress in production
-
-We recommend using TwigExpress for:
-
-1.  discovering (or play with) Twig;
-2.  building HTML prototypes with Twig, CSS and JS.
 
 
 Adding content
