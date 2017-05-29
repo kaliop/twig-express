@@ -3,7 +3,17 @@ Advanced configuration
 
 Define configuration in a `twigexpress.json` file at the root of your project (e.g., in the same folder as the `twigexpress.phar` file).
 
-If this file is missing, TwigExpress will use the following defaults:
+- [Configuration defaults](#configuration-defaults)
+- [`allow_only`](#allow-only)
+- [`debug_mode`](#debug-mode)
+- [`global_vars`](#global-vars)
+- [`namespaces`](#namespaces)
+- [`twig_options`](#twig-options)
+
+
+## Configuration defaults
+
+TwigExpress will use the following configuration defaults:
 
 ```json
 {
@@ -121,4 +131,6 @@ Namespaces can then be used with all Twig tags and functions that reference file
 }
 ```
 
-See the [Twig documentation on environment options](http://twig.sensiolabs.org/doc/api.html#environment-options) for possible values.
+See the [Twig documentation on environment options][TWIG_OPTIONS] for possible values.
+
+[TWIG_OPTIONS]: https://twig.sensiolabs.org/doc/1.x/api.html#environment-options

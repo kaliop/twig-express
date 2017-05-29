@@ -2,7 +2,7 @@ TwigExpress
 ===========
 
 
-*[Download][DOWNLOAD]. Unzip. Write [Twig templates](doc/twigintro.md) see the result.*
+*[Download][DOWNLOAD]. Unzip. Write [Twig templates](doc/intro.md) see the result.*
 
 TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
 
@@ -93,7 +93,7 @@ Writing Twig templates
 There are two sets of features available in templates:
 
 -   **Syntax and features native to the Twig language**<br>
-    See our short guide [“Getting started with Twig”](doc/twigintro.md), and the official [“Twig for Template Designers”][TWIG_INTRO].
+    See our short guide [“Getting started with Twig”](doc/intro.md), and the official [“Twig for Template Designers”][TWIG_INTRO].
 
 -   **Features specific to TwigExpress**<br>
     We’re added [a few extra features](doc/extras.md) to help you write HTML prototypes, such as a dummy text generator and a Markdown parser.

@@ -4,8 +4,11 @@ Getting Started with Twig
 
 Let’s learn some Twig!
 
-In addition to this introduction, you should keep the [Twig documentation][TWIG_DOC] around to check what the available Twig tags, filters and functions are.
+In addition to this short introduction, you should keep the [Twig documentation][TWIG_DOC] around to check what the available Twig tags, filters and functions are.
 
+- [Using variables](#using-variables)
+- [Including stuff](#including-stuff)
+- [Extending a parent template](#extending-a-parent-template)
 
 Using variables
 ---------------
@@ -110,5 +113,5 @@ Next up is the topic of blocks and extends. They’re a really powerful tool, es
 That’s it, you know everything you need to get started with Twig!
 
 
-[TWIG_DOC]: http://twig.sensiolabs.org/documentation
-[TWIG_INHERITANCE]: http://twig.sensiolabs.org/doc/templates.html#template-inheritance
+[TWIG_DOC]: https://twig.sensiolabs.org/doc/1.x/
+[TWIG_INHERITANCE]: https://twig.sensiolabs.org/doc/1.x/templates.html#template-inheritance
