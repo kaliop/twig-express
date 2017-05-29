@@ -140,8 +140,8 @@ We are using the following libraries:
 - [highlight.js][] (BSD License)
 
 
-[TwigExpress]: https://github.com/gradientz/twig-express
-[DOWNLOAD]: https://github.com/gradientz/twig-express/archive/download.zip
+[TwigExpress]: https://github.com/kaliop/twig-express
+[DOWNLOAD]: https://github.com/kaliop/twig-express/archive/download.zip
 [TWIG_HOME]: https://twig.sensiolabs.org/
 [TWIG_LIB]: https://github.com/twigphp/Twig
 [MIME_LIB]: https://github.com/karwana/php-mime
