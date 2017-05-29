@@ -7,10 +7,8 @@ AddHandler application/x-httpd-php .phar
 
 <IfModule mod_rewrite.c>
   RewriteEngine on
-  ## Some Apache configs may require a RewriteBase to work correctly
-  #RewriteBase /
-  ## /!\ Serve all requests with TwigExpress /!\
-  RewriteCond %{REQUEST_FILENAME} \.twig$ [OR]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule (.*) twigexpress.phar/start.php [L]
+  RewriteBase /
+  ## Serve all requests with TwigExpress
+  RewriteCond %{REQUEST_URI} !twigexpress\.phar/start\.php
+  RewriteRule (.*) twigexpress.phar/start.php [L,END]
 </IfModule>
