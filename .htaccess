@@ -5,10 +5,15 @@ Options -Indexes -Multiviews
 ## Treat .phar as PHP
 AddHandler application/x-httpd-php .phar
 
+# Serve all requests with TwigExpress
 <IfModule mod_rewrite.c>
   RewriteEngine on
   RewriteBase /
-  ## Serve all requests with TwigExpress
+  # pass-through if another rewrite rule has been applied already
+  # (simpler with Apache 2.3+, use a [L,END] flag on the RewriteRule)
+  RewriteCond %{ENV:REDIRECT_STATUS} 200
+  RewriteRule ^ - [L]
+  # avoid redirection loops
   RewriteCond %{REQUEST_URI} !twigexpress\.phar/start\.php
-  RewriteRule (.*) twigexpress.phar/start.php [L,END]
+  RewriteRule (.*) twigexpress.phar/start.php [L]
 </IfModule>

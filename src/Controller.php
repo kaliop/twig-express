@@ -61,7 +61,25 @@ class Controller
     public function __construct()
     {
         // Figure out the root dir
-        $this->docRoot = Utils::getCleanPath($_SERVER['DOCUMENT_ROOT']);
+        $docRoot = rtrim(Utils::getCleanPath($_SERVER['DOCUMENT_ROOT']), '/');
+        $scriptName = rtrim(Utils::getCleanPath($_SERVER['SCRIPT_FILENAME']), '/');
+        $scriptRoot = dirname(preg_replace('#/start.php$#', '', $scriptName));
+
+        // Simpler case: we trust the document root we have
+        $this->docRoot = $docRoot;
+        // Apache with a dynamic vhost can have a docroot completely different
+        // from where the twigexpress phar/script lives.
+        if (php_sapi_name() !== 'cli-server' && $scriptRoot !== $docRoot) {
+            // treat as document root if we have a config file or htaccess
+            foreach (array_merge($this->configFiles, ['.htaccess']) as $file) {
+                if (file_exists("$scriptRoot/$file")) {
+                    $this->docRoot = $scriptRoot;
+                    break;
+                }
+            }
+        }
+
+        // Clean and store the requested path
         $this->reqPath = explode('?', Utils::getCleanPath(
             rawurldecode($_SERVER['REQUEST_URI'])
         ))[0];
@@ -352,9 +370,8 @@ class Controller
         }
         $path = $this->reqPath;
         if ($path !== '/') $path = trim($path, '/');
-        $root = rtrim($this->docRoot, '/');
         $msg  = "$verb: <code class=\"error\">$path</code><br>\n";
-        $msg .= "Document root: <code>$root</code>";
+        $msg .= "Document root: <code>$this->docRoot</code>";
         return $this->showPage($code, [
             'title' => $title,
             'message' => $msg
