@@ -553,7 +553,7 @@ class Controller
         $assets = [
             'css' => 'css/styles.css',
             'svg' => 'svg/sprite.svg',
-            'highlightjs' => 'js/highlight.min.js',
+            'highlight' => 'js/highlight.min.js',
             'headings' => 'js/headings.js'
         ];
         $content = [];

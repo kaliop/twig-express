@@ -3,28 +3,26 @@
   {# Layout #}
   {% set assets = twigexpress_layout_assets() %}
   {% set navInfo = twigexpress_layout_navinfo() %}
-  {% set navBorder = navBorder ?? true %}
-
-  {# Content #}
-  {% set metaTitle = metaTitle ?? title ?? navInfo.title %}
-  {% set title = title ?? '' %}
-  {% set message = message ?? '' %}
-  {% set content = content ?? '' %}
-  {% set code = code ?? '' %}
-  {% set codeLang = codeLang ?? 'twig' %}
-  {% set codeContext = codeContext ?? '' %}
-
-  {# File listing #}
-  {% set dirList = dirList ?? [] %}
-  {% set fileList = fileList ?? [] %}
-
-  {# Other #}
+  {% set navBorder = navBorder is defined ? navBorder : true %}
   {% set dirIcon -%}
     <svg class="icon" aria-label="Folder"><use xlink:href="#icon-folder"/></svg>
   {%- endset %}
   {% set fileIcon -%}
     <svg class="icon" aria-label="File"><use xlink:href="#icon-file"/></svg>
   {%- endset %}
+
+  {# Content #}
+  {% set title = title|default('') %}
+  {% set metaTitle = metaTitle|default(title)|default(navInfo.title) %}
+  {% set message = message|default('') %}
+  {% set content = content|default('') %}
+  {% set code = code|default('') %}
+  {% set codeLang = codeLang|default('twig') %}
+  {% set codeContext = codeContext|default('') %}
+
+  {# File listing #}
+  {% set dirList = dirList|default([]) %}
+  {% set fileList = fileList|default([]) %}
 
 {% endspaceless %}
 <!DOCTYPE html>
@@ -96,14 +94,14 @@
   {%- endif %}
 {% endblock %}</main>
 
+{% block footer %}{% endblock %}
+
 {% block scripts %}
-{% if code or 'class="language-' in content %}
   <script>
     {%- if codeContext %}window.twigSubLanguage = '{{ codeContext }}';{% endif -%}
-    {{- assets.highlightjs|replace({'</script': '<\\/script'})|raw -}}
+    {{- assets.highlight|replace({'</script': '<\\/script'})|raw -}}
     ;hljs.initHighlighting();
   </script>
-{% endif %}
   <script>
     {{- assets.headings | raw -}}
   </script>
