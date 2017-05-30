@@ -1,0 +1,212 @@
+:root {
+  /* spacing */
+  --pad: 2.4rem;
+  --code: Source Code Pro, Menlo, Consolas, Ubuntu Mono, monospace;
+}
+
+.lightColors {
+  /* HLJS vim-hybrid colors, some modified for HTML+Twig use case */
+  --black: #1d1f21;
+  --white: #fafefc;
+  --lighter-black: #373b41;
+  --dark-gray: #707880;
+  --mid-gray: #8a94a0;
+  --base-gray: #b4b8b6;
+  --lighter-gray: #dce0da;
+  --lightest-gray: #eef2ef;
+  --orange: #ea712f;
+  --yellow: #f0c674;
+  --red: #d85b5c;
+  --dark-red: #c44e5f;
+  --green: #a5f38f;
+  --dark-green: #6fad77;
+  --purple: #b294bb;
+  --light-purple: #b8c0f0;
+  --blue: #81a2be;
+  --light-blue: #84c0df;
+  --dim-blue: #5b7a95;
+  --aqua: #7acbc6;
+
+  /* vibrant colors */
+  --vibrant-blue: #2070d0;
+  --vibrant-red: #ff6666;
+  --vibrant-orange: #ffbb16;
+  --vibrant-yellow: #ffea00;
+  --vibrant-green: #44ea3c;
+}
+
+/* Let's invert all the colors (keeping original names) */
+.darkColors {
+  --white: #1d1f21;
+  --black: #f6f8fa;
+  --lighter-black: #c8c4be;
+  --dark-gray: #8F877F;
+  --mid-gray: #756B5F;
+  --base-gray: #4B4749;
+  --lighter-gray: #231F25;
+  --lightest-gray: #110D10;
+  --orange: #1567CF;
+  --yellow: #0F398B;
+  --red: #3d7b88;
+  --dark-red: #2d8b7e;
+  --green: #5A0C70;
+  --dark-green: #905288;
+  --purple: #4D6B44;
+  --light-purple: #473F0F;
+  --blue: #7E5D41;
+  --light-blue: #7B3F20;
+  --dim-blue: #A4856A;
+  --aqua: #754148;
+
+  /* vibrant colors */
+  --vibrant-blue: #DF8F2F;
+  --vibrant-red: #009999;
+  --vibrant-orange: #0044E9;
+  --vibrant-yellow: #0015FF;
+  --vibrant-green: #BB15C3;
+}
+
+::selection {
+  color: #fff;
+  background-color: #579;
+  color: var(--lightest-gray, #fff);
+  background-color: var(--dark-red, #579);
+}
+
+::-moz-selection {
+  color: #fff;
+  background-color: #579;
+  color: var(--lightest-gray, #fff);
+  background-color: var(--dark-red, #579);
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1rem;
+  padding: var(--pad);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+  line-height: 1.5;
+  color: #000;
+  background-color: #fff;
+  color: var(--lighter-black, #000);
+  background-color: var(--white, #fff);
+}
+
+body > header:empty,
+body > main:empty,
+body > footer:empty {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  :root {
+    font-size: 87.75%;
+    --pad: 1.2rem;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    padding: 2rem;
+    background-color: var(--lightest-gray);
+  }
+
+  body {
+    max-width: 75rem;
+    margin: 0 auto;
+    border: solid 1px var(--lighter-gray);
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    font-size: 112.5%;
+    --pad: 2.5rem;
+  }
+}
+
+h1 {
+  margin: 1.25rem 0;
+  font-size: 150%;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lighter-black);
+}
+
+h2 {
+  margin: 2rem 0 1rem;
+  font-size: 125%;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lighter-black);
+}
+
+h3, h4, h5, h6 {
+  margin: 1.5rem 0 1rem;
+  font-size: 100%;
+}
+
+a {
+  color: #07a;
+  color: var(--vibrant-blue, #07a);
+}
+
+
+
+blockquote {
+  margin: 1em 0;
+  padding-left: 1rem;
+  border-left: solid .5rem;
+  border-color: var(--vibrant-orange);
+  line-height: 1.5;
+}
+
+p {
+  margin: 1em 0;
+}
+
+pre, code {
+  font-family: monospace, monospace;
+  font-family: var(--code);
+}
+
+pre {
+  white-space: pre-wrap;
+  -webkit-tab-size: 2;
+  -moz-tab-size: 2;
+  tab-size: 2;
+}
+
+code {
+  font-size: 93.75%;
+  color: var(--dark-red);
+}
+
+pre code {
+  display: block;
+}
+
+pre mark {
+  color: white;
+  background: black;
+}
+
+.error {
+  color: var(--red);
+}
+
+main {
+  margin-top: 1rem;
+  margin-top: calc(var(--pad) * .85);
+}
+
+/* SVG icons */
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -.15em;
+  fill: currentColor;
+}

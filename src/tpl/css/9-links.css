@@ -1,0 +1,93 @@
+/* List of files or folders */
+
+.Links {
+  margin: 1.25em 0 .5em;
+  padding: 0;
+  list-style: none;
+  line-height: 1.3;
+}
+
+@media (min-width: 900px) {
+  .Links:not(.Links--cols) {
+    width: calc(50% - .375em);
+  }
+
+  .Links--cols {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: .75em;
+    -moz-column-gap: .75em;
+    column-gap: .75em;
+  }
+
+  .Links--cols li {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+.Links li {
+  position: relative;
+}
+
+.Links li + li {
+  margin-top: -1px;
+}
+
+.Links .icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  margin-top: -.55em;
+}
+
+.Links a {
+  position: relative;
+  display: block;
+  border: solid 1px;
+  border-color: var(--lightest-gray, #ddd);
+  padding: .5rem 1rem .65rem 3rem;
+  text-decoration: none;
+  font-size: 112.5%;
+  color: #000;
+  color: var(--dim-blue, #000);
+}
+
+.Links a span {
+  font-size: 85%;
+  margin-left: 2px;
+  opacity: 0;
+}
+
+.Links a:hover span,
+.Links a:focus span {
+  opacity: .75;
+}
+
+@media (max-width: 600px) {
+  .Links a {
+    padding-top: .6rem;
+    padding-bottom: .75rem;
+  }
+}
+
+.Links a:hover,
+.Links a:focus {
+  outline: none;
+  color: #fff;
+  background-color: #333;
+  background-color: var(--dim-blue, #333);
+}
+
+.Links--folders a {
+  color: var(--dark-red, #000);
+}
+
+.Links--folders a:hover,
+.Links--folders a:focus {
+  color: #fff;
+  background-color: #333;
+  background-color: var(--dark-red, #333);
+}

@@ -480,8 +480,11 @@ class Controller
         if ($path === '') $path .= '/';
 
         // Return docroot folder name (or parent/folder, if short) as site name
-        $folder = pathinfo($this->docRoot, PATHINFO_BASENAME);
-        $pathBn = pathinfo($path, PATHINFO_BASENAME);
+        $folder = basename($this->docRoot);
+        if (strlen($folder) <= 5) {
+            $folder = basename(dirname($this->docRoot)) . ':' . $folder;
+        }
+        $pathBn = basename($path);
         $pathFn = pathinfo($path, PATHINFO_FILENAME);
         $real = pathinfo($this->realPath, PATHINFO_BASENAME);
 
@@ -497,7 +500,7 @@ class Controller
         // Results, which we'll increment over time
         $url = '/';
         $crumbs = [
-            ['url' => $url, 'name' => basename($this->docRoot), 'ext' => false]
+            ['url' => $url, 'name' => $folder, 'ext' => false]
         ];
 
         $fragments = array_filter(explode('/', $path));
@@ -550,17 +553,10 @@ class Controller
         if (is_array($this->layoutAssets)) {
             return $this->layoutAssets;
         }
-        $assets = [
-            'css' => 'css/styles.css',
-            'svg' => 'svg/sprite.svg',
-            'highlight' => 'js/highlight.min.js',
-            'headings' => 'js/headings.js'
-        ];
-        $content = [];
         $root = __DIR__ . '/tpl/';
-        foreach ($assets as $name => $path) {
-            $content[$name] = file_get_contents($root . $path);
-        }
-        return $this->layoutAssets = $content;
+        return $this->layoutAssets = [
+            'css' => file_get_contents($root . 'layout.min.css'),
+            'js'  => file_get_contents($root . 'layout.min.js')
+        ];
     }
 }

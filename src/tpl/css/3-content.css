@@ -1,0 +1,73 @@
+/* Text content (e.g. for markdown previews) */
+
+.Content {
+  max-width: 52em;
+  margin: 0 auto;
+}
+
+.Content:empty {
+  display: none;
+}
+
+.Content h1 {
+  margin: 1em 0 .66em;
+  font-size: 1.8em;
+}
+
+.Content h2 {
+  margin-top: 1.25em;
+  padding: .75rem 0;
+  border-bottom: solid 1px;
+  border-color: var(--lighter-gray);
+}
+
+@media (min-width: 900px) {
+  .Content h1 {
+    font-size: 2.2em;
+  }
+}
+
+.Content h1 code,
+.Content h2 code,
+.Content h3 code,
+.Content h4 code,
+.Content a code {
+  color: inherit;
+}
+
+.Content table {
+  margin: 1.5em 0;
+  border-collapse: collapse;
+}
+
+.Content th,
+.Content td {
+  text-align: left;
+  padding: .5em 1em;
+  border: solid 1px #f0f0f0;
+}
+
+/* Result in test pages */
+
+.TestResult {
+  margin: 1em 0;
+  padding: 1em;
+  border: solid 1px #aaa;
+  font-size: 85%;
+  background: #f4f4f4;
+}
+
+/* Links in columns */
+
+.Content .LinkTable {
+  width: 100%;
+  margin: 3em 0;
+}
+.Content .LinkTable td {
+  padding: 0;
+}
+.Content .LinkTable a {
+  display: block;
+  padding: .5em 1em;
+  text-decoration: none;
+}

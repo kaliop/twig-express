@@ -2,6 +2,7 @@
 
 $NAME = 'twigexpress.phar';
 $SRC  = __DIR__ . '/src';
+$FILTER = '#(/src/lib/|/src/\w+\.php|/src/tpl/layout)#';
 
 if (PHP_SAPI !== 'cli') {
     echo 'This script can only run on the CLI.' . PHP_EOL;
@@ -17,8 +18,8 @@ try {
     $phar = new Phar($NAME, 0, $NAME);
 
     // Add all files in the main directory
-    $phar->buildFromDirectory($SRC);
-    $phar->setStub( $phar->createDefaultStub('start.php', 'start.php') );
+    $phar->buildFromDirectory($SRC, $FILTER);
+    $phar->setStub( $phar->createDefaultStub('index.php', 'index.php') );
 
     // Should be alright now
     $count = $phar->count();

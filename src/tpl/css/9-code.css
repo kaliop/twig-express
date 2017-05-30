@@ -1,0 +1,195 @@
+/* Code block */
+
+.Code, .Content pre > code {
+  position: relative;
+  overflow: hidden;
+  margin: -1rem;
+  margin: calc(var(--pad) * -1);
+  margin-top: 1rem;
+  padding: 1rem;
+  padding: calc(var(--pad) * .85) var(--pad);
+  white-space: pre-wrap;
+  font-family: inherit;
+  line-height: 1.5;
+  color: var(--base-gray);
+  background: var(--black);
+}
+
+.Code > code {
+  color: inherit;
+}
+
+.Code > code.markdown,
+.Code > code.txt {
+  color: var(--lighter-gray);
+}
+
+.Content pre > code {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: var(--black);
+}
+
+@media (min-width: 900px) {
+  .Content pre > code {
+    margin: 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 2px;
+  }
+}
+
+.Code--mark code > :not(mark),
+.Code--mark mark > :not([class*="hljs-template-"]) {
+  filter: saturate(0%);
+}
+
+/* Line numbers */
+
+.Code--numbers > code {
+  padding-left: 1.5rem;
+}
+
+.Code [data-num] {
+  display: none;
+}
+
+.Code--numbers [data-num] {
+  position: absolute;
+  z-index: 9;
+  display: inline-block;
+  width: 3ch;
+  overflow: hidden;
+  margin-left: -4.5ch;
+  text-align: right;
+  color: var(--dark-gray);
+}
+
+.Code--numbers [data-num]::before {
+  content: attr(data-num);
+}
+
+/**
+ * vim-hybrid theme by w0ng (https://github.com/w0ng/vim-hybrid)
+ * Ported to CSS variables for fun.
+ * With modifications or additions in the case of Twig templates
+ * (in order to make the templating tags more visible, and other
+ * markup, especially HTML, more subdued).
+ */
+
+.hljs {
+  display: block;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-subst {
+  color: var(--base-gray);
+}
+
+.hljs-title,
+.hljs-name,
+.hljs-attr {
+  color: var(--purple);
+}
+
+.hljs-comment,
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+  color: var(--dark-gray);
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-literal,
+.hljs-deletion,
+.hljs-link {
+  color: var(--red);
+}
+
+.hljs-doctag,
+.hljs-addition,
+.hljs-regexp,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: var(--green);
+}
+
+.hljs-attribute,
+.hljs-code,
+.hljs-selector-id {
+  color: var(--purple);
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-bullet,
+.hljs-tag {
+  color: var(--blue);
+}
+
+.hljs-string,
+.hljs-variable {
+  color: var(--aqua);
+}
+
+.hljs-type,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-quote,
+.hljs-selector-class {
+  color: var(--orange);
+}
+
+.hljs-section {
+  color: var(--vibrant-orange);
+}
+
+/* Special modifications for HTML tags (subtler look) */
+
+.hljs-tag {
+  color: var(--blue);
+}
+
+.hljs-tag .hljs-name {
+  color: var(--light-blue);
+}
+
+.hljs-tag .hljs-attr {
+  color: var(--purple);
+}
+
+.hljs-tag .hljs-string {
+  color: var(--mid-gray);
+}
+
+/* Special modifications for Twig tags and vars (vibrant look) */
+
+.hljs-template-comment {
+  color: var(--light-purple);
+}
+
+.hljs-template-tag {
+  color: var(--vibrant-orange);
+}
+
+.hljs-template-tag .hljs-name,
+.hljs-template-tag .hljs-keyword {
+  color: var(--vibrant-yellow);
+}
+
+.hljs-template-variable {
+  color: var(--green);
+}
+
+.hljs-template-variable .hljs-name {
+  color: var(--vibrant-green);
+}

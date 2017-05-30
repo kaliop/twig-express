@@ -4,12 +4,10 @@
   {% set assets = twigexpress_layout_assets() %}
   {% set navInfo = twigexpress_layout_navinfo() %}
   {% set navBorder = navBorder is defined ? navBorder : true %}
-  {% set dirIcon -%}
-    <svg class="icon" aria-label="Folder"><use xlink:href="#icon-folder"/></svg>
-  {%- endset %}
-  {% set fileIcon -%}
-    <svg class="icon" aria-label="File"><use xlink:href="#icon-file"/></svg>
-  {%- endset %}
+  {% macro icon(name) -%}
+    <svg class="icon" aria-label="Folder"><use xlink:href="#icon-{{ name }}"></use><g></g></svg>
+  {%- endmacro %}
+  {% from _self import icon %}
 
   {# Content #}
   {% set title = title|default('') %}
@@ -26,23 +24,18 @@
 
 {% endspaceless %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="lightColors">
 <head>
   <meta charset="UTF-8">
   <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
-  {% if metaTitle ?? false %}<title>{{ metaTitle }}</title>{% endif -%}
+  {% if metaTitle ?? false %}<title>{{ metaTitle }}</title>{% endif %}
   <style>.icon{width:1em;height:1em;}</style>
-  {% block styles %}
-  <style>{{ assets.css | raw }}</style>
-  {% endblock %}
 </head>
 <body>
 
-{{ assets.svg | raw }}
-
-<header>
-  {% if navInfo.crumbs|length > 0 %}
+<header>{% block header %}
+  {%- if navInfo.crumbs|length > 0 %}
     <nav{% if navBorder %} class="border"{% endif %}>
       {% for item in navInfo.crumbs %}
         {%- spaceless %}
@@ -57,27 +50,33 @@
         {% endspaceless -%}
       {% endfor %}
     </nav>
-  {% endif %}
-  {% if title %}
+  {%- endif %}
+  {%- if title %}
     <h1>{{ title|raw }}</h1>
-  {% endif %}
-  {% if message %}
+  {%- endif %}
+  {%- if message %}
     <blockquote>{{ message|raw }}</blockquote>
-  {% endif %}
-</header>
+  {%- endif %}
+{% endblock %}</header>
 
 <main>{% block main %}
   {%- if dirList|length > 0 %}
     <ul class="Links Links--folders">
       {% for dir in dirList -%}
-        <li><a class="Links-link" href="{{ dir.url }}/">{{ dirIcon|raw }}{{ dir.name }}</a></li>
+        <li><a class="Links-link" href="{{ dir.url }}/">
+          {{ icon('folder') }}
+          {{ dir.name }}
+        </a></li>
       {%- endfor %}
     </ul>
   {%- endif %}
   {%- if fileList|length > 0 %}
     <ul class="Links Links--files{% if fileList|length > 3 %} Links--cols{% endif %}">
       {% for file in fileList -%}
-        <li><a href="{{ file.url }}">{{ fileIcon|raw }}{{ file.name|replace({'.html':'<span>.html</span>'}) | raw }}</a></li>
+        <li><a href="{{ file.url }}">
+          {{ icon('file') }}
+          {{ file.name }}
+        </a></li>
       {%- endfor %}
     </ul>
   {%- endif %}
@@ -94,16 +93,25 @@
   {%- endif %}
 {% endblock %}</main>
 
-{% block footer %}{% endblock %}
+<footer>{% block footer %}{% endblock %}</footer>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="icon-folder" viewBox="0 0 32 32">
+    <path d="M30 4H15.8l-1.2-2.5C14 .2 13 0 12 0H2C1 0 0 1 0 2v28c0 1 1 2 2 2h28c1 0 2-1 2-2V6c0-1-1-2-2-2z"></path>
+  </symbol>
+  <symbol id="icon-file" viewBox="0 0 28 32">
+    <path d="M2 0h16l10 10v20c0 1-1 2-2 2H2c-1 0-2-1-2-2V2c0-1 1-2 2-2zm14 12h10l-2-2h-6V4l-2-2v10z"></path>
+  </symbol>
+</svg>
+
+{% block styles %}
+  <style>{{ assets.css | raw }}</style>
+{% endblock %}
 
 {% block scripts %}
   <script>
     {%- if codeContext %}window.twigSubLanguage = '{{ codeContext }}';{% endif -%}
-    {{- assets.highlight|replace({'</script': '<\\/script'})|raw -}}
-    ;hljs.initHighlighting();
-  </script>
-  <script>
-    {{- assets.headings | raw -}}
+    {{- assets.js|replace({'</script': '<\\/script'})|raw -}}
   </script>
 {% endblock %}
 
