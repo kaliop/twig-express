@@ -1,12 +1,28 @@
 /* Text content (e.g. for markdown previews) */
 
 .Content {
+  box-sizing: content-box;
   max-width: 52em;
   margin: 0 auto;
+  padding: .5rem 1rem 1.5rem;
+  padding-left: var(--pad);
+  padding-right: var(--pad);
 }
 
 .Content:empty {
   display: none;
+}
+
+.Content:last-child {
+  padding-bottom: calc(var(--pad) * 1.6);
+}
+
+.Content > :first-child {
+  margin-top: 0 !important;
+}
+
+.Content > :last-child {
+  margin-bottom: 0 !important;
 }
 
 .Content h1 {
@@ -47,6 +63,28 @@
   border: solid 1px #f0f0f0;
 }
 
+.Content pre {
+  margin: 1rem -1rem;
+  margin: 1rem calc(var(--pad) * -1);
+  padding: .75rem 1rem;
+  padding: .75rem var(--pad);
+  white-space: pre-wrap;
+  font-family: monospace, monospace;
+  line-height: 1.5;
+  /* we're going to use inverted colors, so this ends up dark on white */
+  color: var(--base-gray);
+  background: var(--black);
+}
+
+@media (min-width: 900px) {
+  .Content pre {
+    margin-left: 0;
+    margin-right: 0;
+    padding: var(--pad-small);
+    border-radius: 2px;
+  }
+}
+
 /* Result in test pages */
 
 .TestResult {
@@ -55,6 +93,12 @@
   border: solid 1px #aaa;
   font-size: 85%;
   background: #f4f4f4;
+}
+
+.TestResult pre {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
 }
 
 /* Links in columns */

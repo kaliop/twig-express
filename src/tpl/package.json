@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && npm run build-js && npm run build-css",
+    "build": "npm run build-js && npm run build-css",
     "build-js": "uglifyjs js/*.js > layout.min.js",
     "build-css": "cat css/*.css | csso > layout.min.css"
   },

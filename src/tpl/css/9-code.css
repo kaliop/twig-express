@@ -1,13 +1,11 @@
 /* Code block */
 
-.Code, .Content pre > code {
+.Code {
   position: relative;
   overflow: hidden;
-  margin: -1rem;
-  margin: calc(var(--pad) * -1);
-  margin-top: 1rem;
-  padding: 1rem;
-  padding: calc(var(--pad) * .85) var(--pad);
+  margin: 0;
+  padding: 2rem 1rem;
+  padding: 2rem var(--pad);
   white-space: pre-wrap;
   font-family: inherit;
   line-height: 1.5;
@@ -24,23 +22,6 @@
   color: var(--lighter-gray);
 }
 
-.Content pre > code {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  margin-top: 0;
-  margin-bottom: 0;
-  background-color: var(--black);
-}
-
-@media (min-width: 900px) {
-  .Content pre > code {
-    margin: 0;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    border-radius: 2px;
-  }
-}
-
 .Code--mark code > :not(mark),
 .Code--mark mark > :not([class*="hljs-template-"]) {
   filter: saturate(0%);
@@ -49,7 +30,13 @@
 /* Line numbers */
 
 .Code--numbers > code {
-  padding-left: 1.5rem;
+  padding-left: 1rem;
+}
+
+@media (min-width:600px) {
+  .Code--numbers > code {
+    padding-left: 1.5rem;
+  }
 }
 
 .Code [data-num] {

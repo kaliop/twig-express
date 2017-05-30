@@ -1,53 +1,65 @@
 
-header {
-  margin-bottom: .5rem;
+body > header {
+  padding: 1rem;
+  padding: var(--pad);
   line-height: 1.2;
 }
 
-nav {
+body > header:empty {
+  display: none;
+}
+
+body > header > :first-child {
+  margin-top: calc(var(--pad) * -.15);
+}
+
+body > header > :last-child {
+  margin-bottom: 0 !important;
+}
+
+body > header nav {
   line-height: 1;
   font-size: 1.125rem;
   color: var(--mid-gray);
   cursor: default;
 }
 
-header nav, header h1:first-child {
-  margin-top: calc(var(--pad) * -.15);
-}
-
-header nav.border {
-  margin-bottom: 1em;
+body > header nav.border {
   padding-bottom: 1em;
-  margin-bottom: calc(var(--pad) * .65);
-  padding-bottom: calc(var(--pad) * .65);
+  padding-bottom: var(--pad-small);
   border-bottom: dashed 1px;
   border-color: var(--lighter-gray);
 }
 
-nav > * {
+body > header nav.border {
+  margin-bottom: 1em;
+  margin-bottom: var(--pad-small);
+}
+
+body > header nav > * {
   display: inline-block;
   margin-right: .1em;
 }
 
-nav .sep {
+body > header nav .sep {
   padding: 0 .15em;
   color: var(--base-gray);
 }
 
-nav .item {
+body > header nav .item {
   padding: 4px 1px;
   font-weight: 600;
 }
 
-nav span.item {
+body > header nav span.item {
   color: var(--mid-gray);
 }
 
-nav a {
+body > header nav a {
   text-decoration: none;
 }
 
-nav a:hover,
-nav a:focus {
+body > header nav a:hover,
+body > header nav a:focus {
   text-decoration: underline;
 }

@@ -172,12 +172,12 @@ class TwigEnv
         //   {% set files = files(['*.json', '*.yaml']) %}
         //   {% set files = files('starting/folder/*.*') %}
         $env->addFunction(new Twig_SimpleFunction('files', function($patterns) {
-            return Utils::glob($patterns, $this->controller->docRoot, 'file');
+            return Utils::getFileList($patterns, $this->controller->docRoot, 'file');
         }));
 
         // Twig function that lists folders for one or several glob patterns
         $env->addFunction(new Twig_SimpleFunction('folders', function($patterns) {
-            return Utils::glob($patterns, $this->controller->docRoot, 'dir');
+            return Utils::getFileList($patterns, $this->controller->docRoot, 'dir');
         }));
 
         // Enable the 'dump' function

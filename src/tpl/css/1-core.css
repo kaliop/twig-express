@@ -1,6 +1,7 @@
 :root {
   /* spacing */
   --pad: 2.4rem;
+  --pad-small: 1.5rem;
   --code: Source Code Pro, Menlo, Consolas, Ubuntu Mono, monospace;
 }
 
@@ -36,6 +37,7 @@
 }
 
 /* Let's invert all the colors (keeping original names) */
+.Content pre,
 .darkColors {
   --white: #1d1f21;
   --black: #f6f8fa;
@@ -83,8 +85,6 @@
 body {
   box-sizing: border-box;
   margin: 0;
-  padding: 1rem;
-  padding: var(--pad);
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   line-height: 1.5;
   color: #000;
@@ -93,16 +93,11 @@ body {
   background-color: var(--white, #fff);
 }
 
-body > header:empty,
-body > main:empty,
-body > footer:empty {
-  display: none;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 400px) {
   :root {
-    font-size: 87.75%;
-    --pad: 1.2rem;
+    font-size: 90%;
+    --pad: 1.5rem;
+    --pad-small: 1rem;
   }
 }
 
@@ -122,7 +117,6 @@ body > footer:empty {
 @media (min-width: 1400px) {
   :root {
     font-size: 112.5%;
-    --pad: 2.5rem;
   }
 }
 
@@ -151,8 +145,6 @@ a {
   color: #07a;
   color: var(--vibrant-blue, #07a);
 }
-
-
 
 blockquote {
   margin: 1em 0;
@@ -194,11 +186,6 @@ pre mark {
 
 .error {
   color: var(--red);
-}
-
-main {
-  margin-top: 1rem;
-  margin-top: calc(var(--pad) * .85);
 }
 
 /* SVG icons */

@@ -71,33 +71,6 @@ class Utils
     }
 
     /**
-     * Retrieve a value from $_GET or $_POST, using a fallback value if
-     * the queried key doesn't exist. Allows defining the method ('get',
-     * 'post' or 'cookie') as a prefix in the name, e.g. 'post:somevar'.
-     * @param string $name
-     * @param string [$fallback]
-     * @return mixed
-     */
-    static function getHttpParameter($name='', $fallback='')
-    {
-        $bag = $_GET;
-        $key = (string) $name;
-        $start = strtolower(explode(':', $key)[0]);
-        if ($start === 'get') {
-            $key = substr($key, 4);
-        }
-        if ($start === 'post') {
-            $key = substr($key, 5);
-            $bag = $_POST;
-        }
-        if ($start === 'cookie') {
-            $key = substr($key, 7);
-            $bag = $_COOKIE;
-        }
-        return array_key_exists($key, $bag) ? $bag[$key] : $fallback;
-    }
-
-    /**
      * Format a block of code (especially Twig code) for displaying in an HTML page.
      * @param string $code Source code
      * @param bool $numbers Add line numbers
@@ -171,7 +144,7 @@ class Utils
      * @param string $type Type of element to return: 'dir', 'file' or both
      * @return array
      */
-    static function glob($patterns='*', $where=null, $type=null)
+    static function getFileList($patterns='*', $where=null, $type=null)
     {
         if (is_string($patterns)) $patterns = [$patterns];
         $files = [];
@@ -194,6 +167,33 @@ class Utils
         // Sort alphabetically
         sort($result);
         return $result;
+    }
+
+    /**
+     * Retrieve a value from $_GET or $_POST, using a fallback value if
+     * the queried key doesn't exist. Allows defining the method ('get',
+     * 'post' or 'cookie') as a prefix in the name, e.g. 'post:somevar'.
+     * @param string $name
+     * @param string [$fallback]
+     * @return mixed
+     */
+    static function getHttpParameter($name='', $fallback='')
+    {
+        $bag = $_GET;
+        $key = (string) $name;
+        $start = strtolower(explode(':', $key)[0]);
+        if ($start === 'get') {
+            $key = substr($key, 4);
+        }
+        if ($start === 'post') {
+            $key = substr($key, 5);
+            $bag = $_POST;
+        }
+        if ($start === 'cookie') {
+            $key = substr($key, 7);
+            $bag = $_COOKIE;
+        }
+        return array_key_exists($key, $bag) ? $bag[$key] : $fallback;
     }
 
     /**

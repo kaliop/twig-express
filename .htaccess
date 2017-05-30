@@ -15,5 +15,6 @@ AddHandler application/x-httpd-php .phar
   RewriteRule ^ - [L]
   # avoid redirection loops
   RewriteCond %{REQUEST_URI} !twigexpress\.phar
-  RewriteRule (.*) twigexpress.phar/index.php [L]
+  #RewriteRule (.*) twigexpress.phar/index.php [L]
+  RewriteRule (.*) src/index.php [L]
 </IfModule>

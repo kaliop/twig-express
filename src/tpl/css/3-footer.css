@@ -1,0 +1,10 @@
+/* Page footer */
+
+body > footer:empty {
+  display: none;
+}
+
+body > footer {
+  padding: 1rem;
+  padding: var(--pad);
+}

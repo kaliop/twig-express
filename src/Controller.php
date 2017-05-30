@@ -407,7 +407,7 @@ class Controller
         $fileList = [];
         $dirList = [];
 
-        foreach(Utils::glob('*', $root, 'file') as $name) {
+        foreach(Utils::getFileList('*', $root, 'file') as $name) {
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             $url = $base . $name;
             // skip dotfiles and blocked file types
@@ -419,7 +419,7 @@ class Controller
             }
             $fileList[] = ['name' => $name, 'url' => $url];
         }
-        foreach(Utils::glob('*', $root, 'dir') as $name) {
+        foreach(Utils::getFileList('*', $root, 'dir') as $name) {
             // skip dotfiles
             if (substr($name, 0, 1) === '.') continue;
             $dirList[] = ['name' => $name, 'url' => $base.$name];
