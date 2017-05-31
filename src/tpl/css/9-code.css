@@ -3,7 +3,8 @@
 .Code {
   position: relative;
   overflow: hidden;
-  margin: 0;
+  margin: 0 -1rem;
+  margin: 0 calc(var(--pad) * -1);
   padding: 2rem 1rem;
   padding: 2rem var(--pad);
   white-space: pre-wrap;
@@ -13,8 +14,23 @@
   background: var(--black);
 }
 
+header:empty + main > .Code:first-child {
+  margin-top: -1rem;
+  margin-top: calc(var(--pad) * -1);
+}
+
+.Code:last-child {
+  margin-bottom: -1rem;
+  margin-bottom: calc(var(--pad) * -1);
+}
+
 .Code > code {
   color: inherit;
+}
+
+/* Add a bit more space when at the end of content */
+.Code:last-child > code {
+  margin: .5rem 0;
 }
 
 .Code > code.markdown,

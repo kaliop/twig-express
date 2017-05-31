@@ -1,7 +1,6 @@
 TwigExpress
 ===========
 
-
 TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
 
 Main features:
@@ -15,8 +14,6 @@ Main features:
 
 1.  discovering (or play with) Twig;
 2.  building HTML prototypes with Twig, CSS and JS.
-
-
 
 *Table of contents*
 
@@ -88,7 +85,6 @@ There are two sets of features available in templates:
 
 -   **Features specific to TwigExpress**<br>
     We’re added [a few extra features](doc/extras.md) to help you write HTML prototypes, such as a dummy text generator and a Markdown parser.
-
 
 
 Configuration

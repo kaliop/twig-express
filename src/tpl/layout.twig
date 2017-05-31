@@ -3,6 +3,7 @@
   {# Layout #}
   {% set assets = twigexpress_layout_assets() %}
   {% set navInfo = twigexpress_layout_navinfo() %}
+  {% set breadcrumbs = breadcrumbs|default(navInfo.crumbs) %}
   {% set navBorder = navBorder is defined ? navBorder : true %}
   {% macro icon(name) -%}
     <svg class="icon" aria-label="Folder"><use xlink:href="#icon-{{ name }}"></use><g></g></svg>
@@ -28,9 +29,9 @@
 
 <header>
 {%- block header -%}
-  {%- if navInfo.crumbs|length > 0 -%}
+  {%- if breadcrumbs and breadcrumbs|length > 0 -%}
     <nav{% if navBorder %} class="border"{% endif %}>
-      {% for item in navInfo.crumbs %}
+      {% for item in breadcrumbs %}
         {%- spaceless %}
           {% if not loop.first and not item.ext %}
             <span class="sep">/</span>
@@ -88,6 +89,10 @@
   {%- endif -%}
 {% endset %}
 
+{% set FooterContent %}
+  {%- block footer %}{% endblock -%}
+{% endset %}
+
 <main>
 {%- block main -%}
   {%- if LinkContent|trim|length > 0 -%}
@@ -103,11 +108,12 @@
   ">{{ CodeContent|raw }}</pre>
   {%- endif -%}
 {%- endblock -%}
+{%- if FooterContent|trim|length > 0 -%}
+  <footer>
+    {{ FooterContent|raw }}
+  </footer>
+{%- endif -%}
 </main>
-
-<footer>
-{%- block footer %}{% endblock -%}
-</footer>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <symbol id="icon-folder" viewBox="0 0 32 32">

@@ -61,8 +61,8 @@ class Controller
     public function __construct()
     {
         // Figure out the root dir
-        $docRoot = rtrim(Utils::getCleanPath($_SERVER['DOCUMENT_ROOT']), '/');
-        $scriptName = rtrim(Utils::getCleanPath($_SERVER['SCRIPT_FILENAME']), '/');
+        $docRoot = Utils::getCleanPath($_SERVER['DOCUMENT_ROOT'], 'r');
+        $scriptName = Utils::getCleanPath($_SERVER['SCRIPT_FILENAME'], 'r');
         $scriptRoot = dirname(preg_replace('#/start.php$#', '', $scriptName));
 
         // Simpler case: we trust the document root we have

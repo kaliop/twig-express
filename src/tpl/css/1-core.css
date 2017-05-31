@@ -93,6 +93,16 @@ body {
   background-color: var(--white, #fff);
 }
 
+main {
+  padding: 1rem;
+  padding: var(--pad);
+}
+
+main > * + *:not(:empty) {
+  margin-top: 1rem;
+  margin-top: var(--pad);
+}
+
 @media (max-width: 400px) {
   :root {
     font-size: 90%;

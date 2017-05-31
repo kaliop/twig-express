@@ -18,15 +18,26 @@ class Utils
      * Cleans up a local resource path, removing back-slashes, double dots, etc.
      * Should not be necessary for content from a URL but let's be on the safe side.
      * @param  string $path
+     * @param  bool|string $trimSlashes - true (both sides), 'l' or 'r'
      * @return string
      */
-    static function getCleanPath($path)
+    static function getCleanPath($path, $trimSlashes=false)
     {
-        return preg_replace(
+        $clean = preg_replace(
             ['/\\\/', '/\/{2,}/', '/\.{2,}/'],
             ['/', '/', '.'],
             $path
         );
+        if ($trimSlashes === true) {
+            return trim($clean, '/');
+        }
+        else if ($trimSlashes === 'l') {
+            return ltrim($clean, '/');
+        }
+        else if ($trimSlashes === 'r') {
+            return rtrim($clean, '/');
+        }
+        return $clean;
     }
 
     /**
@@ -150,7 +161,7 @@ class Utils
         $files = [];
         // Find files to include and exclude
         foreach($patterns as $p) {
-            $p = is_string($p) ? ltrim($p, '\\/') : '';
+            $p = is_string($p) ? static::getCleanPath($p, 'l') : '';
             if ($p == '' || strpos($p,'..') !== false) continue;
             $files = array_merge($files, glob("$where/$p", GLOB_BRACE));
         }
@@ -174,7 +185,7 @@ class Utils
      * the queried key doesn't exist. Allows defining the method ('get',
      * 'post' or 'cookie') as a prefix in the name, e.g. 'post:somevar'.
      * @param string $name
-     * @param string [$fallback]
+     * @param mixed [$fallback]
      * @return mixed
      */
     static function getHttpParameter($name='', $fallback='')

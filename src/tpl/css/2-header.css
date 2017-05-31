@@ -2,6 +2,7 @@
 body > header {
   padding: 1rem;
   padding: var(--pad);
+  padding-bottom: 0;
   line-height: 1.2;
 }
 

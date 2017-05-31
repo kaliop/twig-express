@@ -3,18 +3,12 @@
 .Content {
   box-sizing: content-box;
   max-width: 52em;
-  margin: 0 auto;
-  padding: .5rem 1rem 1.5rem;
-  padding-left: var(--pad);
-  padding-right: var(--pad);
+  margin: .5rem auto 1rem;
+  margin-bottom: var(--pad-small);
 }
 
 .Content:empty {
   display: none;
-}
-
-.Content:last-child {
-  padding-bottom: calc(var(--pad) * 1.6);
 }
 
 .Content > :first-child {
