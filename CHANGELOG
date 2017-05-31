@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- Rewrite the TwigExpress layout; partial style rewrite.
+
 ## 2.0.0
 
 BREAKING CHANGES:
