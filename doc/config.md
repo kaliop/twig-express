@@ -1,5 +1,5 @@
-Advanced configuration
-======================
+TwigExpress configuration reference
+===================================
 
 Define configuration in a `twigexpress.json` file at the root of your project (e.g., in the same folder as the `twigexpress.phar` file).
 

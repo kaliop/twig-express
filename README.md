@@ -10,18 +10,22 @@ Main features:
 -   Error pages with code excerpt, source view
 -   And a few extra tools for prototyping (dummy text, Markdown to HTML…):
 
-**⚠ Do not use in production ⚠** We recommend using TwigExpress for:
+**⚠ Do not use in production ⚠**<br>
+We recommend using TwigExpress for:
 
 1.  discovering (or play with) Twig;
 2.  building HTML prototypes with Twig, CSS and JS.
 
 *Table of contents*
 
-2. [Installation](#installation)
-3. [Adding content](#adding-content)
-4. [Writing Twig templates](#writing-twig-templates)
-5. [Configuration](#configuration)
-6. [Library and license info](#library-and-license-info)
+1.  [Installation](#installation)
+2.  [Adding content](#adding-content)
+3.  [Writing Twig templates](#writing-twig-templates)
+    -   ↪ [Getting Started with Twig](doc/intro.md)
+    -   ↪ [TwigExpress-specific features](doc/extras.md)
+4.  [Configuration](#configuration)
+    -   ↪ [TwigExpress configuration reference](doc/config.md)
+5.  [Library and license info](#library-and-license-info)
 
 
 Installation
@@ -81,7 +85,7 @@ Writing Twig templates
 There are two sets of features available in templates:
 
 -   **Syntax and features native to the Twig language**<br>
-    See our short guide [“Getting started with Twig”](doc/intro.md), and the official [“Twig for Template Designers”][TWIG_INTRO].
+    See our short guide [“Getting started with Twig”](doc/intro.md), and the official [“Twig for Template Designers”][TWIG_INTRO] guide.
 
 -   **Features specific to TwigExpress**<br>
     We’re added [a few extra features](doc/extras.md) to help you write HTML prototypes, such as a dummy text generator and a Markdown parser.
