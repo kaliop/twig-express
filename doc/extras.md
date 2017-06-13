@@ -119,6 +119,9 @@ You can make use of the same HTML page layout and styling as the TwigExpress pag
 ```twig
 {% extends twigexpress_layout() %}
 
+{# Content for the <title> element #}
+{% set metaTitle = 'My Awesome Page' %}
+
 {% block content %}
   <h1>My Awesome Page</h1>
   <p>Hello there.</p>
@@ -127,5 +130,10 @@ You can make use of the same HTML page layout and styling as the TwigExpress pag
 {% block styles %}
   {{ parent() }}
   <style>/* Adding custom styles */</style>
+{% endblock %}
+
+{% block scripts %}
+  {{ parent() }}
+  <script>/* Adding custom JS */</script>
 {% endblock %}
 ```
