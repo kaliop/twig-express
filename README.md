@@ -16,7 +16,8 @@ We recommend using TwigExpress for:
 1.  discovering (or play with) Twig;
 2.  building HTML prototypes with Twig, CSS and JS.
 
-*Table of contents*
+Table of contents
+-----------------
 
 1.  [Installation](#installation)
 2.  [Adding content](#adding-content)
