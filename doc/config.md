@@ -4,11 +4,11 @@ TwigExpress configuration reference
 Define configuration in a `twigexpress.json` file at the root of your project (e.g., in the same folder as the `twigexpress.phar` file).
 
 - [Configuration defaults](#configuration-defaults)
-- [`allow_only`](#allow-only)
-- [`debug_mode`](#debug-mode)
-- [`global_vars`](#global-vars)
+- [`allow_only`](#allow_only)
+- [`debug_mode`](#debug_mode)
+- [`global_vars`](#global_vars)
 - [`namespaces`](#namespaces)
-- [`twig_options`](#twig-options)
+- [`twig_options`](#twig_options)
 
 
 ## Configuration defaults
