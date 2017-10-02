@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ metaTitle|default('Example Layout')|striptags }}</title>
+        {% if metaDesc|default(0) %}
+        <meta name="description" content="{{ metaDesc }}">
+        {% endif %}
+        <link rel="stylesheet" href="/demo/test.css">
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+</html>

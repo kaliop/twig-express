@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.2
+
+- Remove separate 'download' branch, in favour of 'master'.
+- Remove `.htaccess`, see `doc/apache.md`.
+- Update highlight.js to 9.12.0.
+- `php twigexpress.phar` prints a short message and the release version.
+
+## 2.1.1
+
+- Update Twig lib to 1.35.0.
+
 ## 2.1.0
 
 - Rewrite the TwigExpress layout; partial style rewrite.

@@ -21,13 +21,13 @@ Table of contents
 
 1.  [Installation](#installation)
 2.  [Adding content](#adding-content)
-3.  [Writing Twig templates](#writing-twig-templates)
-    -   ↪ [Getting Started with Twig](doc/intro.md)
-    -   ↪ [TwigExpress-specific features](doc/extras.md)
-4.  [Configuration](#configuration)
-    -   ↪ [TwigExpress configuration reference](doc/config.md)
+3.  [Writing Twig templates](#writing-twig-templates)<br>
+    ↪ [Getting Started with Twig][DOC_INTRO]<br>
+    ↪ [TwigExpress-specific features][DOC_EXTRAS]
+4.  [Configuration](#configuration)<br>
+    ↪ [TwigExpress configuration reference][DOC_CONFIG]
+    ↪ [Using TwigExpress with Apache][DOC_APACHE]
 5.  [Library and license info](#library-and-license-info)
-
 
 Installation
 ------------
@@ -40,12 +40,11 @@ Installation
 
 ### Installation and usage
 
-1.  [Download a ZIP of the example project][DOWNLOAD] and unzip it.
+1.  [Download a ZIP of this repo][DOWNLOAD] and unzip it.
 2.  Open a Terminal or Command Prompt *in that folder*, and run:<br>
     `php --server localhost:8000 twigexpress.phar`.
 3.  Load `http://localhost:8000/` in a web browser to browse files.<br>
     Any file ending in `.twig` will be interpreted as a Twig template.
-
 
 Adding content
 --------------
@@ -55,18 +54,16 @@ After installing TwigExpress, you should have a folder whose content looks like 
 ```
 myproject/
     demo/
-    .htaccess
-    index.twig
+    LICENSE
     README.md
     twigexpress.json
     twigexpress.phar
 ```
 
-If you don’t care about the demo files, you can remove them, keeping only this:
+If you don’t care about the test and info files, you can remove them, keeping only this:
 
 ```
 myproject/
-    .htaccess
     twigexpress.json
     twigexpress.phar
 ```
@@ -86,37 +83,20 @@ Writing Twig templates
 There are two sets of features available in templates:
 
 -   **Syntax and features native to the Twig language**<br>
-    See our short guide [“Getting started with Twig”](doc/intro.md), and the official [“Twig for Template Designers”][TWIG_INTRO] guide.
+    See our short guide [“Getting started with Twig”][DOC_INTRO], and the official [“Twig for Template Designers”][TWIG_INTRO] guide.
 
 -   **Features specific to TwigExpress**<br>
-    We’re added [a few extra features](doc/extras.md) to help you write HTML prototypes, such as a dummy text generator and a Markdown parser.
-
+    We’re added [a few extra features][DOC_EXTRAS] to help you write HTML prototypes, such as a dummy text generator and a Markdown parser.
 
 Configuration
 -------------
 
 Configuration goes in a `twigexpress.json` file at the root of your project. This file should follow the JSON format ([here’s a good introduction](https://www.digitalocean.com/community/tutorials/an-introduction-to-json)).
 
-See the [list of available options](doc/config.md).
+More information:
 
-You might want to use this file to define global variables, which will be available in all Twig templates in your project. This might look like this:
-
-```json
-{
-  "global_vars": {
-    "navItems": ["Home", "Services", "About"]
-  }
-}
-```
-
-This allows you to use the variables directly in any Twig template:
-
-```twig
-{% for item in navItems %}
-  <a href="#">{{ item }}</a>
-{% endfor %}
-```
-
+- [TwigExpress configuration reference][DOC_CONFIG]
+- [Using TwigExpress with Apache][DOC_APACHE]
 
 Library and license info
 ------------------------
@@ -133,7 +113,12 @@ We are using the following libraries:
 
 
 [TwigExpress]: https://github.com/kaliop/twig-express
-[DOWNLOAD]: https://github.com/kaliop/twig-express/archive/download.zip
+[DOWNLOAD]: https://github.com/kaliop/twig-express/archive/master.zip
+[DOC_INTRO]: https://github.com/kaliop/twig-express/blob/master/doc/intro.md
+[DOC_EXTRAS]: https://github.com/kaliop/twig-express/blob/master/doc/extras.md
+[DOC_CONFIG]: https://github.com/kaliop/twig-express/blob/master/doc/config.md
+[DOC_APACHE]: https://github.com/kaliop/twig-express/blob/master/doc/apache.md
+
 [TWIG_HOME]: https://twig.sensiolabs.org/
 [TWIG_LIB]: https://github.com/twigphp/Twig
 [MIME_LIB]: https://github.com/karwana/php-mime

@@ -71,14 +71,14 @@
 ::selection {
   color: #fff;
   background-color: #579;
-  color: var(--lightest-gray, #fff);
+  color: var(--white, #fff);
   background-color: var(--dark-red, #579);
 }
 
 ::-moz-selection {
   color: #fff;
   background-color: #579;
-  color: var(--lightest-gray, #fff);
+  color: var(--white, #fff);
   background-color: var(--dark-red, #579);
 }
 

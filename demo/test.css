@@ -1,0 +1,71 @@
+body {
+    max-width: 32em;
+    margin: 0 auto;
+    padding: 2em 1em;
+    font-size: 90%;
+    font-family: Georgia, serif;
+}
+
+h1 {
+    margin: 0 -5px 1em;
+    font-family: Helvetica Neue, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+h1 span {
+    padding: 0 .2em;
+    color: #fff;
+    background-color: deeppink;
+}
+
+h2 {
+    margin-top: 1.6em;
+    padding-top: 1.45em;
+    border-top: solid 1px #ccc;
+}
+
+figure {
+    margin: 1em 0;
+}
+
+figure img {
+    width: 100%;
+    height: 280px;
+    max-height: 50vw;
+    object-fit: cover;
+}
+
+figcaption {
+    margin-top: .5em;
+    text-align: center;
+    font-style: italic;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+table {
+    width: 100%;
+    border: solid 1px #ccc;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: solid 1px #ccc;
+    text-align: left;
+    vertical-align: top;
+    padding: .4em .6em;
+}
+
+td {
+    font-family: monospace;
+}
+
+@media (min-width: 30em) {
+    body { padding: 4em 2em; font-size: 100%; }
+    h1 { font-size: 2.8em; }
+}

@@ -101,9 +101,11 @@
   width: 100%;
   margin: 3em 0;
 }
+
 .Content .LinkTable td {
   padding: 0;
 }
+
 .Content .LinkTable a {
   display: block;
   padding: .5em 1em;

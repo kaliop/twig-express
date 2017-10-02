@@ -1,0 +1,10 @@
+# Remove PHP source from zip downloads,
+# only keeping twigexpress.phar, doc & test folders
+/dev             export-ignore
+/doc             export-ignore
+/src             export-ignore
+/test            export-ignore
+/.editorconfig   export-ignore
+/.gitattributes  export-ignore
+/.gitignore      export-ignore
+/CHANGELOG.md    export-ignore

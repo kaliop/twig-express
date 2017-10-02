@@ -1,3 +1,18 @@
+Using TwigExpress with Apache
+=============================
+
+As a reminder, instead of using a web server such as Apache you can run TwigExpress using PHP on the command line:
+
+```sh
+$ php --server localhost:8000 twigexpress.phar
+```
+
+But if you do want to use Apache, you can:
+
+1. Put `twigexpress.phar` in your web root.
+2. Create a `.htaccess` file with this content:
+
+```apache
 ## Multiviews can create issues with filename.ext.twig
 ## patterns (when accessed as filename.ext).
 Options -Indexes -Multiviews
@@ -15,6 +30,8 @@ AddHandler application/x-httpd-php .phar
   RewriteRule ^ - [L]
   # avoid redirection loops
   RewriteCond %{REQUEST_URI} !twigexpress\.phar
-  #RewriteRule (.*) twigexpress.phar/index.php [L]
-  RewriteRule (.*) src/index.php [L]
+  RewriteRule (.*) twigexpress.phar/index.php [L]
 </IfModule>
+```
+
+Reminder: TwigExpress is not made for production sites, only for local development. Using it on a live server is a security risk.
