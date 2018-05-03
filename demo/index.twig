@@ -5,30 +5,35 @@
 
 {% block content %}
 
-    <h1>{{ metaTitle|raw }}</h1>
+  <h1>{{ metaTitle|raw }}</h1>
 
-    <figure>
-        <img src="/demo/image.jpg" alt="[Cool doge]">
-        <figcaption>Just discovering Twig? Read <a href="https://github.com/gradientz/twig-express/blob/master/doc/intro.md">our short introduction</a></figcaption>
-    </figure>
+  <figure>
+    <img src="/demo/image.jpg" alt="[Cool doge]">
+    <figcaption>Just discovering Twig? Read <a href="https://github.com/gradientz/twig-express/blob/master/doc/intro.md">our short introduction</a></figcaption>
+  </figure>
 
-    <h2>Variables in <code>_context</code></h2>
-    <table>
-        <tr><th>Key</th><th>Value</th></tr>
-{% for key,val in _context if key != '_parent' %}
-        <tr><td>{{ key }}</td><td>{{ val|json_encode|replace({'\\/':'/'}) }}</td></tr>
-{% endfor %}
-    </table>
+  <h2>Look at this page’s source!</h2>
+  <p>It’s split in two files:</p>
+  <ul>
+    <li><a href="/demo/layout.twig"><code>demo/layout.twig</code></a></li>
+    <li><a href="/demo/index.twig"><code>demo/index.twig</code></a></li>
+  </ul>
 
-    <h2>Including a template</h2>
-    <pre>{% verbatim %}{% include 'demo/test.json.twig' with {hello:'goodbye'} %}{% endverbatim %}</pre>    
-    <p>Output:</p>
-    <pre>{% include 'demo/test.json.twig' with {hello:'goodbye'} %}</pre>
-    <p>Or load this template directly: <a href="/demo/test.json">demo/test.json</a></p>
+  <h2>Variables in <code>_context</code></h2>
+  <table>
+    <tr><th>Key</th><th>Value</th></tr>
+    {% for key,val in _context if key != '_parent' %}
+      <tr><td>{{ key }}</td><td>{{ val|json_encode|replace({'\\/':'/'}) }}</td></tr>
+    {% endfor %}
+  </table>
 
-    <h2>Reading a file</h2>
-    <pre>{% verbatim %}{{ source('LICENSE', ignore_missing=true) }}{% endverbatim %}</pre>
-    <p>Output:</p>
-    <pre style="font-size:80%">{{ source('LICENSE', ignore_missing=true) }}</pre>
+  <h2>Including templates and files</h2>
+  <p>Including a template (interpreted as Twig):</p>
+  <pre>{% verbatim %}{% include 'demo/test.json.twig' with {hello:'goodbye'} %}{% endverbatim %}</pre>
+  <pre>{% include 'demo/test.json.twig' with {hello:'goodbye'} %}</pre>
+
+  <p>Including a file (not interpreted):</p>
+  <pre>{% verbatim %}{{ source('demo/test.json.twig') }}{% endverbatim %}</pre>
+  <pre>{{ source('demo/test.json.twig') }}</pre>
 
 {% endblock %}

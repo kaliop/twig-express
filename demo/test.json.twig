@@ -1,5 +1,4 @@
-{% set hello = hello|default('world') %}
 {
-    "hello": "{{ hello }}",
+    "hello": "{{ hello|default('world') }}",
     "list": [{% for value in 1..20 %}"value = {{ value }}"{% if not loop.last %}, {% endif %}{% endfor %}]
 }

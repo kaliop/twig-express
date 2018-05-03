@@ -1,6 +1,5 @@
 # Remove PHP source from zip downloads,
-# only keeping twigexpress.phar, doc & test folders
-/dev             export-ignore
+# only keeping twigexpress.phar|json and demo folder
 /doc             export-ignore
 /src             export-ignore
 /test            export-ignore

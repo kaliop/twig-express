@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3
+
+- Fix main download by removing test-specific config in `twigexpress.json`.
+- Update Twig lib to 1.35.3.
+
 ## 2.1.2
 
 - Remove separate 'download' branch, in favour of 'master'.

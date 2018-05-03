@@ -1,12 +1,7 @@
 {
   "debug_mode": true,
   "global_vars": {
-    "test_data": {
-      "some_number": 3.1415926535898,
-      "with spaces": "Hey there"
-    }
+    "some_global_var": "I'm set in twigexpress.json"
   },
-  "namespaces": {
-    "test_namespace": "./test"
-  }
+  "namespaces": {}
 }

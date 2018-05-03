@@ -2,7 +2,11 @@
 
 {% block content %}
   <h1>TwigExpress tests</h1>
-  <p><strong>Scope:</strong> We’re only testing features specific to TwigExpress. Manual tests for now.</p>
+  <ul>
+    <li>Manual tests for now.</li>
+    <li>We’re only testing features specific to TwigExpress.</li>
+    <li>Some tests require a test config in <code>twigexpress.json</code>.</li>
+  </ul>
   <table class="LinkTable">
     <tr>
       <th>Page</th>
@@ -19,4 +23,17 @@
     {% endif %}
   {% endfor %}
   </table>
+  <h2>Test config</h2>
+  <pre>{
+  "debug_mode": true,
+  "global_vars": {
+    "test_data": {
+      "some_number": 3.1415926535898,
+      "with spaces": "Hey there"
+    }
+  },
+  "namespaces": {
+    "test_namespace": "./test"
+  }
+}</pre>
 {% endblock %}

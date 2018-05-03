@@ -1,50 +1,56 @@
 TwigExpress
 ===========
 
-TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file. Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a big PHP framework or a CMS.
+TwigExpress packages the [Twig templating engine][TWIG_HOME], and a few other tools, in a single file.
+
+Our goal is to make it easy to get started with Twig if you’re a designer or a front-end developer, without having to install a heavy PHP framework or CMS.
 
 Main features:
 
--   Browse and serve files
+-   Browse and serve files (⚠ only for development!)
 -   Render Twig templates
 -   Error pages with code excerpt, source view
 -   And a few extra tools for prototyping (dummy text, Markdown to HTML…):
 
-**⚠ Do not use in production ⚠**<br>
-We recommend using TwigExpress for:
-
-1.  discovering (or play with) Twig;
-2.  building HTML prototypes with Twig, CSS and JS.
-
 Table of contents
 -----------------
 
-1.  [Installation](#installation)
+1.  [Running TwigExpress](#running-twigexpress)
 2.  [Adding content](#adding-content)
 3.  [Writing Twig templates](#writing-twig-templates)<br>
     ↪ [Getting Started with Twig][DOC_INTRO]<br>
     ↪ [TwigExpress-specific features][DOC_EXTRAS]
 4.  [Configuration](#configuration)<br>
-    ↪ [TwigExpress configuration reference][DOC_CONFIG]
+    ↪ [TwigExpress configuration reference][DOC_CONFIG]<br>
     ↪ [Using TwigExpress with Apache][DOC_APACHE]
 5.  [Library and license info](#library-and-license-info)
 
-Installation
-------------
+Running TwigExpress
+-------------------
 
 ### Requirements
 
--   PHP 5.4+ available on the command line.<br>
-    On macOS, you should have PHP installed already.<br>
-    On Windows, one easy way to install PHP (and other tools) is [XAMPP](https://www.apachefriends.org/download.html).
+PHP 5.4+ available on the command line.
 
-### Installation and usage
+-   On macOS, you should have PHP installed already.
+-   On Windows, one easy way to install PHP (and other tools) is [XAMPP](https://www.apachefriends.org/download.html).
 
-1.  [Download a ZIP of this repo][DOWNLOAD] and unzip it.
-2.  Open a Terminal or Command Prompt *in that folder*, and run:<br>
-    `php --server localhost:8000 twigexpress.phar`.
-3.  Load `http://localhost:8000/` in a web browser to browse files.<br>
-    Any file ending in `.twig` will be interpreted as a Twig template.
+### Download TwigExpress
+
+-   [Download a ZIP of this repo][DOWNLOAD] and unzip.
+-   Recommended: rename `twig-express-master` to your project’s name.
+
+### Usage
+
+Open your project folder in a Terminal or Command Prompt and run this command:
+
+```sh
+php --server localhost:8000 twigexpress.phar
+```
+
+Now load [http://localhost:8000/](http://localhost:8000/) in a web browser to browse your files.
+
+Any file ending in `.twig` will be interpreted as a Twig template. You can check out the example pages in the `demo` directory.
 
 Adding content
 --------------
@@ -60,7 +66,7 @@ myproject/
     twigexpress.phar
 ```
 
-If you don’t care about the test and info files, you can remove them, keeping only this:
+If you don’t care about the demo and read-me, you can keep these only:
 
 ```
 myproject/
@@ -68,14 +74,26 @@ myproject/
     twigexpress.phar
 ```
 
-You can add your own content anywhere. By content we mean: Twig templates (which must have the `.twig` extension), CSS, scripts, images, etc. File names and URLs will match, but you should omit the `.twig` extension in URLs. We’re also using `index.twig` and `index.html` files as directory index, if they exist. For example:
+You can add your own content anywhere. This content can be Twig templates (which must have the `.twig` extension), CSS, scripts, images, etc.
 
-- `myproject/index.twig` → can be accessed at `http://localhost:8000/`
-- `myproject/some/page.twig` → `http://localhost:8000/some/page`
-- `myproject/css/styles.css` → `http://localhost:8000/css/styles.css`
-
-There is no enforced convention for where to place stylesheets, JavaScript, etc. Feel free to organize your static assets and templates however you want.
-
+<table>
+  <tr>
+    <th scope="col">Example file path</th>
+    <th scope="col">Corresponding URL</th>
+  </tr>
+  <tr>
+    <td><code>myproject/index.twig</code></td>
+    <td><code>http://localhost:8000/</code></td>
+  </tr>
+  <tr>
+    <td><code>myproject/some/page.twig</code></td>
+    <td><code>http://localhost:8000/some/page</code></td>
+  </tr>
+  <tr>
+    <td><code>myproject/css/styles.css</code></td>
+    <td><code>http://localhost:8000/css/styles.css</code></td>
+  </tr>
+</table>
 
 Writing Twig templates
 ----------------------

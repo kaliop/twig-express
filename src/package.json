@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "npm run js && npm run css && npm run phar && npm run serve",
+    "js": "uglifyjs js/*.js > php/tpl/layout.min.js",
+    "css": "cat css/*.css | csso > php/tpl/layout.min.css",
+    "phar": "php makephar.php",
+    "serve": "cd .. && php --server localhost:8088 twigexpress.phar"
+  },
+  "dependencies": {
+    "csso-cli": "^1.1.0",
+    "uglify-js": "^3.3.23"
+  }
+}
